@@ -1,0 +1,132 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  font-family: "Silkscreen", system-ui;
+  background-color: var(--amber);
+  width: 100vw;
+  height: 100vh;
+}
+
+.top-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--light-blue);
+  width: 100%;
+  height: 7vh;
+  gap: 60vw;
+  padding: 1rem 0;
+  box-sizing: border-box;
+}
+
+.game-title, .game-uno-code {
+  font-size: 2.3vh;
+  color: var(--white);
+}
+
+.question-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--white);
+  width: 80vw;
+  height: 22vh;
+  margin: 1rem 0;
+  border: 0.5vw solid #000;
+  box-shadow: 0.5vw 0.5vw #000;
+}
+
+.question-section p {
+  font-size: 4.3vh;
+  color: #000;
+}
+
+.grid-section {
+  display: grid;
+  grid-template-columns: repeat(2, 1080px);
+  grid-template-rows: repeat(2, 218px);
+  gap: 1vw;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+.grid-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 40px;
+  color: var(--white);
+  border: 0.5vw solid #000;
+  box-shadow: 0.5vw 0.5vw #000;
+  transition: 0.1s;
+}
+
+.grid-item:active {
+  box-shadow: 0 0 #000;
+  transform: translate(0.5vw, 0.5vw);
+}
+
+.grid-item:hover {
+  color: #000;
+  animation: bounce 0.3s;
+}
+
+@keyframes bounce {
+  0% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-4px); 
+  }
+  50% {
+    transform: translateY(0); 
+  }
+  70% {
+    transform: translateY(-2px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.bounce {
+  animation: bounce 1s;
+}
+
+.grid-item:nth-child(1) {
+  background-color: var(--teal);
+}
+
+.grid-item:nth-child(2) {
+  background-color: var(--pink); 
+}
+
+.grid-item:nth-child(3) {
+  background-color: var(--orange);
+}
+
+.grid-item:nth-child(4) {
+  background-color: var(--green); 
+}
+
+.footer-uno {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: var(--brown);
+  width: 100%;
+  height: 5%;
+  padding: 1rem;
+  gap: 13.4%;
+}
+
+.high-score {
+  font-size: 2vh;
+  color: var(--white);
+}
+
+.first, .second, .third {
+  font-weight: bold;
+}
