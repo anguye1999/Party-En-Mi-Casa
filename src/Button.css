@@ -15,7 +15,7 @@
     100% {
       transform: translateY(0); /* End at original position */
     }
-  }
+}
 
 .eight-bit-button {
     border: 0.5vw solid #000;
@@ -54,6 +54,10 @@
 .eight-bit-button:hover {
     color: #000;
     animation: bounce 0.3s;
+}
+
+.eight-bit-button:hover {
+  outline: none;
 }
 
 @media (max-width: 768px) {
