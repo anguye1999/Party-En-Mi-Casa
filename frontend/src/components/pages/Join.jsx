@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../Header.jsx';
+import PixelArtConverter from '../PixelArtConverter.jsx';
 import '../../styles/Join.css';
 
 const Join = () => {
@@ -8,6 +9,7 @@ const Join = () => {
   const [username, setUsername] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [pixelArtImage, setPixelArtImage] = useState(null);
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
@@ -17,12 +19,18 @@ const Join = () => {
     setSuccessMessage('');
 
     try {
+      const formData = new FormData();
+      formData.append('roomCode', roomCode);
+      formData.append('username', username);
+      if (pixelArtImage) {
+        const response = await fetch(pixelArtImage);
+        const blob = await response.blob();
+        formData.append('avatar', blob, 'avatar.png');
+      }
+
       const response = await fetch('http://localhost:3001/api/join', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ roomCode, username }),
+        body: formData,
       });
 
       if (response.status === 404) {
@@ -69,6 +77,10 @@ const Join = () => {
             maxLength={16}
             placeholder="Enter your username"
           />
+        </div>
+        <div>
+          <label>Avatar Image:</label>
+          <PixelArtConverter onImageConverted={setPixelArtImage} />
         </div>
         {errorMessage && <p className="error-message">{errorMessage}</p>}
         {successMessage && <p className="success-message">{successMessage}</p>}
