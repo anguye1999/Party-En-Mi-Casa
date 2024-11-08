@@ -33,7 +33,7 @@ const Signup = () => {
     const lowercasedUsername = username.toLowerCase();
     const lowercasedEmail = email.toLowerCase();
   
-    fetch('http://localhost:3001/api/signup', {
+    fetch('http://localhost:3002/api/signup', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
