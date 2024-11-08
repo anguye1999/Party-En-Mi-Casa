@@ -1,0 +1,71 @@
+@import url('App.css');
+
+.footer {
+    background-color: var(--brown);
+    color: var(--white);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+    height: 10%;
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 1000;
+}
+  
+.footer-button {
+    border: 0.25vw solid #000;
+    text-transform: uppercase;
+    font-weight: bold;
+    cursor: pointer;
+    background-color: var(--grey);
+    box-shadow: 0.25vw 0.25vw #000;
+    width: 20vw;
+    font-size: 1.5vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0;
+    margin: 1rem;
+    padding: 1rem;
+}
+  
+  /* Bounce Animation */
+  @keyframes bounce {
+    0% {
+      transform: translateY(0);
+    }
+    30% {
+      transform: translateY(-4px);
+    }
+    50% {
+      transform: translateY(0);
+    }
+    70% {
+      transform: translateY(-2px);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+  
+.footer-button:hover {
+    border-color: #000;
+    animation: bounce 0.3s; 
+}
+  
+.footer-button:active {
+    box-shadow: 0 0 #000;
+    transform: translate(0.25vw, 0.25vw);
+    outline: none;
+}
+  
+.back-button:hover {
+    background-color: var(--pink);
+}
+  
+.vamos-button:hover {
+    background-color: var(--green);
+}
