@@ -23,11 +23,13 @@ const Home = () => {
   
     console.log('Button clicked:', gameChoice);
     console.log('Generated room code:', code);
-  
+    
+    localStorage.setItem('gameChoice', gameChoice);
+
     navigate(`/room/${code}`);
   
     setLoading(true);
-  
+    
     fetch('http://localhost:3001/api/choose-game', {
       method: 'POST',
       headers: {

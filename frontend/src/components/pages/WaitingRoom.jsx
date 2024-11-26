@@ -9,13 +9,25 @@ const WaitingRoom = () => {
   const { code } = useParams();
   const [fiesteros, setFiesteros] = useState([]);
   const navigate = useNavigate();
+  const [gameChoice, setGameChoice] = useState('');
 
   useEffect(() => {
     fetch(`http://localhost:3001/api/room/${code}`)
       .then(response => response.json())
       .then(data => setFiesteros(data.fiesteros))
       .catch(error => console.error('Error fetching room data:', error));
+
+    const storedGameChoice = localStorage.getItem('gameChoice');
+    setGameChoice(storedGameChoice);
   }, [code]);
+
+  const handleVamosClick = () => {
+    if (gameChoice === 'Game Uno') {
+      navigate(`/room/${code}/gameuno`);
+    } else {
+      console.log('Vamos clicked, but no action taken for:', gameChoice);
+    }
+  };
 
   return (
     <div className="waiting-room">
@@ -40,7 +52,7 @@ const WaitingRoom = () => {
       </div>
       <Footer>
         <button className="footer-button back-button" onClick={() => navigate('/home')}>Back</button>
-        <button className="footer-button vamos-button" onClick={() => console.log('VAMOS button clicked')}>¡VAMOS!</button>
+        <button className="footer-button vamos-button" onClick={handleVamosClick}>¡VAMOS!</button>
       </Footer>
     </div>
   );

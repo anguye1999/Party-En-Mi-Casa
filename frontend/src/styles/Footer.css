@@ -69,3 +69,11 @@
 .vamos-button:hover {
     background-color: var(--green);
 }
+
+.choose-game-button:hover {
+  background-color: var(--light-blue);
+}
+
+.new-game-button:hover {
+  background-color: var(--green);
+}
