@@ -6,13 +6,13 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint .",
+    "lint": "npx prettier -c .",
     "preview": "vite preview"
   },
   "dependencies": {
     "jsonwebtoken": "^9.0.2",
-    "qrcode.react": "^4.0.1",
     "partyenmicasa": "file:",
+    "qrcode.react": "^4.0.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.26.2",
@@ -31,6 +31,7 @@
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.9",
     "globals": "^15.9.0",
+    "prettier": "^3.4.1",
     "vite": "^5.4.1"
   }
 }
