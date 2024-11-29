@@ -1,4 +1,4 @@
-@import url('App.css');
+@import url("App.css");
 
 .gameuno-container {
   display: flex;
@@ -60,7 +60,9 @@
 }
 
 @keyframes bounce {
-  0%, 50%, 100% {
+  0%,
+  50%,
+  100% {
     transform: translateY(0);
   }
   30% {

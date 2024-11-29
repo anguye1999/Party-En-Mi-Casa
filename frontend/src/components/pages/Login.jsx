@@ -1,42 +1,41 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import '../../styles/Login.css';
-import '../../styles/App.css';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "../../styles/Login.css";
+import "../../styles/App.css";
 
 const Login = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setErrorMessage('');
-  
-    const response = await fetch('http://localhost:3002/api/login', {
-      method: 'POST',
+    setErrorMessage("");
+
+    const response = await fetch("http://localhost:3002/api/login", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ username, password }),
     });
-  
+
     try {
       const data = await response.json();
-  
+
       if (response.ok && data.success) {
-        localStorage.setItem('token', data.token);
-        console.log('Login successful, token stored:', data.token);
-        navigate('/home');
+        localStorage.setItem("token", data.token);
+        console.log("Login successful, token stored:", data.token);
+        navigate("/home");
       } else {
-        setErrorMessage(data.message || 'Login failed');
+        setErrorMessage(data.message || "Login failed");
       }
     } catch (error) {
-      console.error('Error:', error);
-      setErrorMessage('An error occurred during login');
+      console.error("Error:", error);
+      setErrorMessage("An error occurred during login");
     }
   };
-  
 
   return (
     <div className="login-container">
@@ -65,7 +64,7 @@ const Login = () => {
         </div>
         {errorMessage && <p className="error-message">{errorMessage}</p>}
         <button type="submit">Login</button>
-        <button onClick={() => navigate('/signup')}>Create an Account</button>
+        <button onClick={() => navigate("/signup")}>Create an Account</button>
       </form>
     </div>
   );

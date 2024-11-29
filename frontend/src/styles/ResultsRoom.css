@@ -1,4 +1,4 @@
-@import url('App.css');
+@import url("App.css");
 
 .results-container {
   display: flex;
@@ -58,7 +58,7 @@
 
 .third-place {
   height: 35vh;
-  background-color: #CD7F32;
+  background-color: #cd7f32;
 }
 
 .eight-bit-box-two {

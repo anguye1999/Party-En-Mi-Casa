@@ -1,18 +1,18 @@
 :root {
-    --orange: #FF6F00;
-    --teal: #008080;
-    --pink: #FF4081;
-    --amber: #FFC107;
-    --green: #4CAF50;
-    --brown: #6D4C41;
-    --white: #FFFFFF;
-    --grey: #d8d8d8;
-    --light-blue: #03A9F4;
+  --orange: #ff6f00;
+  --teal: #008080;
+  --pink: #ff4081;
+  --amber: #ffc107;
+  --green: #4caf50;
+  --brown: #6d4c41;
+  --white: #ffffff;
+  --grey: #d8d8d8;
+  --light-blue: #03a9f4;
 }
 
 * {
-    font-family: 'Press Start 2P', cursive;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  font-family: "Press Start 2P", cursive;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }

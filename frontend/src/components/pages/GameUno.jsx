@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import Header from '../Header';
-import Footer from '../Footer';
-import '../../styles/GameUno.css';
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import Header from "../Header";
+import Footer from "../Footer";
+import "../../styles/GameUno.css";
 
 const GameUno = () => {
   const { code } = useParams();
@@ -70,7 +70,12 @@ const GameUno = () => {
         {fiesteros.map((fiestero, index) => (
           <span key={index}>{fiestero}</span>
         ))}
-        <button className="footer-button back-button" onClick={() => navigate('/home')}>Back</button>
+        <button
+          className="footer-button back-button"
+          onClick={() => navigate("/home")}
+        >
+          Back
+        </button>
       </Footer>
     </div>
   );

@@ -1,15 +1,15 @@
-import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import Header from '../Header'; 
-import Footer from '../Footer'; 
-import '../../styles/ResultsRoom.css';
+import React from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import Header from "../Header";
+import Footer from "../Footer";
+import "../../styles/ResultsRoom.css";
 
 const ResultsRoom = () => {
   const { code } = useParams();
   const navigate = useNavigate();
 
   const handleBack = () => navigate(`/room/${code}`);
-  const handleChooseGame = () => navigate('/home');
+  const handleChooseGame = () => navigate("/home");
   const handleNewGame = () => navigate(`/room/${code}/gameuno`);
 
   return (
@@ -36,9 +36,21 @@ const ResultsRoom = () => {
       </div>
 
       <Footer>
-        <button className="footer-button back-button" onClick={handleBack}>Back</button>
-        <button className="footer-button choose-game-button" onClick={handleChooseGame}>Choose Game</button>
-        <button className="footer-button new-game-button" onClick={handleNewGame}>New Game</button>
+        <button className="footer-button back-button" onClick={handleBack}>
+          Back
+        </button>
+        <button
+          className="footer-button choose-game-button"
+          onClick={handleChooseGame}
+        >
+          Choose Game
+        </button>
+        <button
+          className="footer-button new-game-button"
+          onClick={handleNewGame}
+        >
+          New Game
+        </button>
       </Footer>
     </div>
   );

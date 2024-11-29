@@ -1,23 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import '../styles/Header.css';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "../styles/Header.css";
 
 const Header = ({ title }) => {
   const navigate = useNavigate();
-  const [user, setUser] = useState('');
+  const [user, setUser] = useState("");
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    navigate('/login');
+    localStorage.removeItem("token");
+    navigate("/login");
   };
 
   useEffect(() => {
     const fetchUserName = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/user', {
-          method: 'GET',
+        const response = await fetch("http://localhost:3001/api/user", {
+          method: "GET",
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
         });
 
@@ -25,10 +25,10 @@ const Header = ({ title }) => {
           const data = await response.json();
           setUser(data.username);
         } else {
-          console.error('Failed to fetch user name:', response.status);
+          console.error("Failed to fetch user name:", response.status);
         }
       } catch (error) {
-        console.error('Error fetching user name:', error);
+        console.error("Error fetching user name:", error);
       }
     };
 
@@ -40,7 +40,9 @@ const Header = ({ title }) => {
       <h1 className="header-title">{title}</h1>
       <div className="user-greeting">
         {user && <span className="user-name">Hello, {user}</span>}
-        <button className="logout-button" onClick={handleLogout}>Logout</button>
+        <button className="logout-button" onClick={handleLogout}>
+          Logout
+        </button>
       </div>
     </header>
   );
