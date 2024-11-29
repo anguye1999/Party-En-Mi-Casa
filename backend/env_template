@@ -1,0 +1,10 @@
+# Server port
+BACKEND_PORT=3002
+
+# MongoDB
+MONGODB_URI=mongodb://localhost:27017/
+#MONGODB_USER=
+#MONGODB_PASSWORD=
+
+# JWT secret key
+JWT_SECRET=
