@@ -18,8 +18,8 @@ jobs:
       with:
         node-version: 22
     - name: Install
-      working-directory: ./frontend
-      run: npm ci
-    - name: Lint
-      working-directory: ./frontend
-      run: npm run lint
+      run: npm i prettier
+    - name: Lint Frontend
+      run: npx prettier -c ./frontend
+    - name: Lint API
+      run: npx prettier -c ./api

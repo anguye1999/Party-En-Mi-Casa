@@ -4,25 +4,12 @@ A fun party game for you and your amigos!  Create a room and have your friends j
 
 ## Directions for Running with Podman
 
-Edit all `env_template` and rename to `.env`.
+Edit `env_template` and rename to `.env`.
 
 Start databases:
 
 ```
-podman compose -f ./db/docker-compose.yml up -d
-```
-
-Run frontend with vite:
-
-```
-cd frontend
-npm run dev
-```
-
-Run backend:
-
-```
-node ./backend/server.js
+podman compose up -d
 ```
 
 ## Development Ports
