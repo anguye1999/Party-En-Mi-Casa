@@ -24,3 +24,13 @@ Run backend:
 ```
 node ./backend/server.js
 ```
+
+## Development Ports
+
+| Service | Port |
+|---------|------|
+| React Frontend | 3000 |
+| WebSockets | 3001 |
+| REST API | 3002 |
+| MongoDB | 27017 |
+| Mongo-Express | 8081 |
