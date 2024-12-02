@@ -13,7 +13,7 @@ services:
       - 8081:8081
     depends_on:
       - mongo
-  api:
+  backend:
     build: ./backend
     ports:
       - 3002:3002
@@ -21,3 +21,5 @@ services:
       - mongo
     env_file:
       - .env
+  redis:
+    image: docker.io/redis

@@ -9,7 +9,10 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import bodyParser from "body-parser";
+import { createServer } from "http";
+import { createWebSocketRouter } from "./routes/websockets.js";
 import authRoutes from "./routes/auth.js";
+import roomRoutes from "./routes/room.js";
 
 const app = express();
 
@@ -17,12 +20,18 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 app.use("/api", authRoutes);
+app.use("/api", roomRoutes);
 
 // Connect to MongoDB using URI from the environment variables.
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => console.log("Connected to MongoDB"))
   .catch((error) => console.error("Error connecting to MongoDB: ", error));
+
+// Start the websockets
+const server = createServer(app);
+const JWT_SECRET = process.env.JWT_SECRET;
+const wss = createWebSocketRouter(server, JWT_SECRET);
 
 // Start backend server and listen on API_PORT from the environment variables.
 const API_PORT = process.env.API_PORT;

@@ -5,7 +5,7 @@
  * control mechanism. Should be used for all protected routes.
  */
 
-const jwt = require("jsonwebtoken");
+import jwt from "jsonwebtoken";
 const JWT_SECRET = process.env.JWT_SECRET;
 
 // Middleware function to authenticate users based on JWT.
@@ -30,4 +30,4 @@ function authMiddleware(req, res, next) {
   }
 }
 
-module.exports = authMiddleware;
+export default authMiddleware;

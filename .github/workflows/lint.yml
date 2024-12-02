@@ -21,5 +21,5 @@ jobs:
       run: npm i prettier
     - name: Lint Frontend
       run: npx prettier -c ./frontend
-    - name: Lint API
-      run: npx prettier -c ./api
+    - name: Lint Backend
+      run: npx prettier -c ./backend

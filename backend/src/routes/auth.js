@@ -5,16 +5,11 @@
  * securely.
  */
 
-// const express = require("express");
-// const bcrypt = require("bcrypt");
-// const jwt = require("jsonwebtoken");
-// const User = require("../models/user");
-// const router = express.Router();
-
 import express from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/user.js";
+
 const router = express.Router();
 
 // JWT secret key, loaded from environment variables.
