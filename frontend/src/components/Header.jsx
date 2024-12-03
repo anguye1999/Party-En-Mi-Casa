@@ -11,10 +11,14 @@ const Header = ({ title }) => {
     navigate("/login");
   };
 
+  const handleJoin = () => {
+    navigate("/join");
+  };
+
   useEffect(() => {
     const fetchUserName = async () => {
       try {
-        const response = await fetch("http://localhost:3001/api/user", {
+        const response = await fetch("http://localhost:3002/api/user", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -40,6 +44,9 @@ const Header = ({ title }) => {
       <h1 className="header-title">{title}</h1>
       <div className="user-greeting">
         {user && <span className="user-name">Hello, {user}</span>}
+        <button className="join-room-button" onClick={handleJoin}>
+              Join
+        </button>
         <button className="logout-button" onClick={handleLogout}>
           Logout
         </button>

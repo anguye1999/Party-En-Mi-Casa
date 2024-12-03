@@ -36,7 +36,15 @@ router.post("/login", async (req, res) => {
     const token = jwt.sign({ userId: existingUser._id }, JWT_SECRET, {
       expiresIn: "1h",
     });
-    res.status(200).json({ success: true, token });
+    res.status(200).json({
+      success: true,
+      token,
+      user: {
+        username: existingUser.username,
+        email: existingUser.email,
+        avatar: existingUser.avatar
+      }
+    });
   } catch (error) {
     console.error("Error during login: ", error);
     res.status(400).json({ message: "Login failed. ", error: error.message });
@@ -45,22 +53,59 @@ router.post("/login", async (req, res) => {
 
 // API route for handling user signup.
 router.post("/signup", async (req, res) => {
-  const { username, email, password } = req.body;
+  const { username, email, password, avatar } = req.body;
 
   try {
     // Determine whether a user with the provided email address already exists.
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
+    const existingUserByEmail = await User.findOne({ email });
+    const existingUserByUsername = await User.findOne({ username });
+    if (existingUserByEmail) {
       return res
         .status(400)
-        .json({ message: "Username or Email already in use." });
+        .json({ message: "Email already in use." });
+    } else if (existingUserByUsername) {
+      return res
+        .status(400)
+        .json({ message: "Username already in use." })
+    }
+
+    // Validate avatar if provided
+    let validatedAvatar = null;
+    if (avatar) {
+      // Basic validation for base64 image
+      const base64Regex = /^data:image\/(png|jpeg|jpg|gif);base64,/;
+      if (!base64Regex.test(avatar)) {
+        return res.status(400).json({ message: "Invalid avatar format." });
+      }
+
+      const maxSizeBytes = 20 * 1024 * 1024; // 20MB
+      const imageSize = Math.round(avatar.length * 0.75); // Approximate base64 to bytes
+      if (imageSize > maxSizeBytes) {
+        return res.status(400).json({ message: "Avatar image is too large." });
+      }
+
+      validatedAvatar = avatar;
     }
 
     // Hash the password for secure storage, create the new user and save them to the database.
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ username, email, password: hashedPassword });
+    const newUser = new User({
+      username,
+      email,
+      password: hashedPassword,
+      avatar: validatedAvatar
+    });
+
     await newUser.save();
-    res.status(201).json({ message: "User created successfully." });
+
+    res.status(201).json({
+      message: "User created successfully.",
+      user: {
+        username: newUser.username,
+        email: newUser.email,
+        avatar: newUser.avatar ? true : false
+      }
+    });
   } catch (error) {
     console.error("Error saving user: ", error);
     res

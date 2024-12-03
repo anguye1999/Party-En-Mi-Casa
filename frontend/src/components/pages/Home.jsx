@@ -31,7 +31,7 @@ const Home = () => {
 
     setLoading(true);
 
-    fetch("http://localhost:3001/api/choose-game", {
+    fetch("http://localhost:3002/api/choose-game", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

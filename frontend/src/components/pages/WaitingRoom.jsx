@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { QRCodeCanvas } from "qrcode.react";
 import Footer from "../Footer";
-import Header from "../Header"; // Import your Header component
+import Header from "../Header";
 import "../../styles/WaitingRoom.css";
 
 const WaitingRoom = () => {
@@ -12,13 +12,37 @@ const WaitingRoom = () => {
   const [gameChoice, setGameChoice] = useState("");
 
   useEffect(() => {
-    fetch(`http://localhost:3001/api/room/${code}`)
-      .then((response) => response.json())
-      .then((data) => setFiesteros(data.fiesteros))
-      .catch((error) => console.error("Error fetching room data:", error));
+    const fetchRoomData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(`http://localhost:3002 /api/room/${code}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch room data');
+        }
+        
+        const data = await response.json();
+        setFiesteros(data.fiesteros);
+      } catch (error) {
+        console.error("Error fetching room data:", error);
+      }
+    };
+
+    // Initial fetch
+    fetchRoomData();
+
+    // Set up polling to update room data every 5 seconds
+    const pollInterval = setInterval(fetchRoomData, 5000);
 
     const storedGameChoice = localStorage.getItem("gameChoice");
     setGameChoice(storedGameChoice);
+
+    // Cleanup polling on component unmount
+    return () => clearInterval(pollInterval);
   }, [code]);
 
   const handleVamosClick = () => {
@@ -38,21 +62,31 @@ const WaitingRoom = () => {
           <p className="room-code">{code}</p>
           <QRCodeCanvas
             className="QR-code"
-            value={`http://partyenmi.casa/join`}
+            value={`http://localhost:3000/${code}`}
             size={200}
           />
         </div>
         <div className="fiesteros-box eight-bit-box">
           <h2>Fiesteros</h2>
-          <ul>
-            {fiesteros.map((user, index) => (
-              <li key={index}>
-                <img
-                  src="/src/assets/char_icon.png"
-                  alt="icon"
-                  className="list-icon"
-                />
-                {user}
+          <ul className="fiesteros-list">
+            {fiesteros.map((fiestero, index) => (
+              <li key={index} className="fiestero-item">
+                <div className="fiestero-avatar">
+                  {fiestero.avatar ? (
+                    <img
+                      src={fiestero.avatar}
+                      alt={`${fiestero.username}'s avatar`}
+                      className="user-avatar"
+                    />
+                  ) : (
+                    <img
+                      src="/src/assets/char_icon.png"
+                      alt="Default avatar"
+                      className="user-avatar"
+                    />
+                  )}
+                </div>
+                <span className="fiestero-username">{fiestero.username}</span>
               </li>
             ))}
           </ul>

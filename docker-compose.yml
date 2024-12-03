@@ -6,7 +6,7 @@ services:
   mongo:
     image: docker.io/mongo
     volumes:
-      - ./db/mongo:/data/db
+      - mongoDB:/data/db
   mongo-express:
     image: docker.io/mongo-express
     ports:
@@ -23,3 +23,7 @@ services:
       - .env
   redis:
     image: docker.io/redis
+
+volumes:
+  mongoDB:
+    external: true
