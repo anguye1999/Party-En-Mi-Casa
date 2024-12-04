@@ -1,0 +1,18 @@
+:root {
+  --orange: #ff6f00;
+  --teal: #008080;
+  --pink: #ff4081;
+  --amber: #ffc107;
+  --green: #4caf50;
+  --brown: #6d4c41;
+  --white: #ffffff;
+  --grey: #d8d8d8;
+  --light-blue: #03a9f4;
+}
+
+* {
+  font-family: "Press Start 2P", cursive;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}

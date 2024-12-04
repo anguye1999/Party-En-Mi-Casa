@@ -1,0 +1,38 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding-left: 1vw;
+  background-color: var(--light-blue);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.header-title {
+  text-align: center;
+  font-size: 2rem;
+  color: #000;
+  margin: 0;
+  border: 0;
+  box-shadow: none;
+}
+
+.logout-button {
+  background-color: var(--amber);
+  color: #000;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  padding: 2vh;
+  margin: 10px;
+  margin-right: 30px;
+  width: 7.5vw;
+  font-size: 0.75rem;
+}
+
+.logout-button:hover {
+  background-color: var(--orange);
+}

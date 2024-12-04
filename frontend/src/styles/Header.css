@@ -1,0 +1,90 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding-left: 1vw;
+  background-color: var(--light-blue);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.header-title {
+  text-align: center;
+  font-size: 2rem;
+  color: #000;
+  margin: 0;
+  border: 0;
+  box-shadow: none;
+}
+
+.user-greeting {
+  display: flex;
+  align-items: center;
+  gap: 1vw;
+}
+
+.logout-button,
+.join-room-button {
+  color: #000;
+  cursor: pointer;
+  padding: 2vh;
+  margin: 10px;
+  width: 7.5vw;
+  font-size: 0.75rem;
+}
+
+.logout-button {
+  border: none;
+  border-radius: 50px;
+  background-color: var(--amber);
+  margin-right: 30px;
+}
+
+.join-room-button {
+  border: 3px solid #000;
+  border-radius: 0;
+  text-transform: uppercase;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.1s;
+  box-shadow: 3px 3px #000;
+  background-color: var(--pink);
+}
+
+.logout-button:hover {
+  background-color: var(--orange);
+}
+
+.join-room-button:active {
+  box-shadow: 0 0 #000;
+  transform: translate(0.25vw, 0.25vw);
+  outline: none;
+}
+
+.join-room-button:hover {
+  color: #000;
+  outline: none;
+  border-color: black;
+  animation: bounce 0.3s;
+}
+
+.user-name {
+  color: #000;
+  font-size: 1rem;
+  margin-right: 1vw;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-icon {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+}
