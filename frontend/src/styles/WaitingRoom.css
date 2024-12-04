@@ -103,7 +103,7 @@ h2 {
 }
 
 /* Media Queries for Mobile Responsiveness */
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 1024px) {
   .waiting-room-container {
     flex-direction: column;
     justify-content: center;
@@ -124,7 +124,7 @@ h2 {
   }
 
   h2 {
-    font-size: 4.5vw;
+    font-size: 8.5vw;
   }
 
   .room-code {
@@ -140,12 +140,14 @@ h2 {
 
   .fiesteros-list {
     font-size: 4vw;
+    width: 100%;
   }
 
   .fiestero-item {
     font-size: 3vw;
     padding: 0.5rem;
     margin-bottom: 1rem;
+    width: 90%;
   }
 
   .fiestero-avatar {
@@ -166,7 +168,6 @@ h2 {
   }
 
   .QR-code {
-    margin-top: 2rem;
     width: 50vw;
     height: 50vw;
   }

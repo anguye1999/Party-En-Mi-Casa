@@ -82,8 +82,8 @@ const ResultsRoom = () => {
                 </div>
                 <div className="player-info">
                   <div className="place">2nd</div>
-                  <div className="name">{scores[1]?.username}</div>
-                  <div className="score">{scores[1]?.score} pts</div>
+                  {/* <div className="name">{scores[1]?.username}</div>
+                  <div className="score">{scores[1]?.score} pts</div> */}
                 </div>
               </div>
             )}
@@ -96,8 +96,8 @@ const ResultsRoom = () => {
                 </div>
                 <div className="player-info">
                   <div className="place">1st</div>
-                  <div className="name">{scores[0]?.username}</div>
-                  <div className="score">{scores[0]?.score} pts</div>
+                  {/* <div className="name">{scores[0]?.username}</div>
+                  <div className="score">{scores[0]?.score} pts</div> */}
                 </div>
               </div>
             )}
@@ -110,8 +110,8 @@ const ResultsRoom = () => {
                 </div>
                 <div className="player-info">
                   <div className="place">3rd</div>
-                  <div className="name">{scores[2]?.username}</div>
-                  <div className="score">{scores[2]?.score} pts</div>
+                  {/* <div className="name">{scores[2]?.username}</div>
+                  <div className="score">{scores[2]?.score} pts</div> */}
                 </div>
               </div>
             )}
@@ -135,7 +135,7 @@ const ResultsRoom = () => {
                 <div className="player-header">
                   <span className="rank">#{index + 1}</span>
                   <span className="name">{player.username}</span>
-                  <span className="total-score">{player.score} points</span>
+                  <span className="total-score">{player.score} pts</span>
                 </div>
                 {renderPerformanceStats(player)}
               </div>
@@ -149,7 +149,7 @@ const ResultsRoom = () => {
                 <li key={player.userId} className={`leaderboard-item animate-slide-in`}>
                   <span className="rank">#{index + 1}</span>
                   <span className="name">{player.username}</span>
-                  <span className="score">{player.score} points</span>
+                  <span className="score">{player.score} pts</span>
                 </li>
               ))}
             </ul>
