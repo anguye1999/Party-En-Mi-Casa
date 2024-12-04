@@ -76,3 +76,15 @@
   font-size: 1rem;
   margin-right: 1vw;
 }
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-icon {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+}

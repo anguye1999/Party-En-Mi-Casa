@@ -5,15 +5,35 @@ import Footer from "../Footer.jsx";
 import Header from "../Header.jsx";
 import "../../styles/Home.css";
 
+const API_BASE_URL = "http://localhost:3002/api";
+
+const GAME_BUTTONS = [
+  { label: "Game Uno", className: "button-yellow" },
+  { label: "Game Dos", className: "button-pink" },
+  { label: "Game Tres", className: "button-blue" }
+];
+
 const Home = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const generateCode = () =>
-    Math.random().toString(36).substring(2, 6).toUpperCase();
+  const createRoom = async (token) => {
+    const response = await fetch(`${API_BASE_URL}/create-room`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      }
+    });
 
-  const handleClick = (gameChoice) => {
-    const code = generateCode();
+    if (!response.ok) {
+      throw new Error("Failed to create room");
+    }
+
+    return response.json();
+  };
+
+  const handleClick = async (gameChoice) => {
     const token = localStorage.getItem("token");
 
     if (!token) {
@@ -22,34 +42,20 @@ const Home = () => {
       return;
     }
 
-    console.log("Button clicked:", gameChoice);
-    console.log("Generated room code:", code);
-
-    localStorage.setItem("gameChoice", gameChoice);
-
-    navigate(`/room/${code}`);
-
     setLoading(true);
 
-    fetch("http://localhost:3002/api/choose-game", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ gameChoice, roomCode: code }),
-    })
-      .then((response) => {
-        if (response.ok) {
-          console.log("API response successful");
-        } else {
-          console.error("API response failed", response.status);
-        }
-      })
-      .catch((error) =>
-        console.error("Error while sending game choice and room code:", error),
-      )
-      .finally(() => setLoading(false));
+    try {
+      const { roomCode } = await createRoom(token);
+      console.log("Button clicked:", gameChoice);
+      console.log("Generated room code:", roomCode);
+      
+      localStorage.setItem("gameChoice", gameChoice);
+      navigate(`/room/${roomCode}`);
+    } catch (error) {
+      console.error("Error creating room:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -61,27 +67,20 @@ const Home = () => {
           <div>Loading...</div>
         ) : (
           <>
-            <Button
-              label="Game Uno"
-              className="button-yellow"
-              onClick={() => handleClick("Game Uno")}
-            />
-            <Button
-              label="Game Dos"
-              className="button-pink"
-              onClick={() => handleClick("Game Dos")}
-            />
-            <Button
-              label="Game Tres"
-              className="button-blue"
-              onClick={() => handleClick("Game Tres")}
-            />
+            {GAME_BUTTONS.map(({ label, className }) => (
+              <Button
+                key={label}
+                label={label}
+                className={className}
+                onClick={() => handleClick(label)}
+              />
+            ))}
           </>
         )}
       </main>
 
       <Footer>
-        <p>
+        <p style={{ paddingLeft: "2rem" }}>
           partyenmi.casa created as course work for COSC617 at Towson University
         </p>
       </Footer>

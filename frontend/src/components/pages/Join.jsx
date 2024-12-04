@@ -1,78 +1,80 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "../Header.jsx";
-import PixelArtConverter from "../PixelArtConverter.jsx";
 import "../../styles/Join.css";
 
+const API_BASE_URL = "http://localhost:3002/api";
+
 const Join = () => {
-  const [roomCode, setRoomCode] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
-  const [pixelArtImage, setPixelArtImage] = useState(null);
   const navigate = useNavigate();
-  
-  // Handle the pixel art conversion
-  const handleImageConverted = (convertedImage) => {
-    setPixelArtImage(convertedImage);
+  const [formState, setFormState] = useState({
+    roomCode: "",
+    errorMessage: "",
+    successMessage: ""
+  });
+
+  const updateFormState = (updates) => {
+    setFormState(prev => ({ ...prev, ...updates }));
+  };
+
+  const clearMessages = () => {
+    updateFormState({ errorMessage: "", successMessage: "" });
+  };
+
+  const verifyRoom = async (token) => {
+    const response = await fetch(`${API_BASE_URL}/room/${formState.roomCode}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        throw new Error("Room not found. Please check the room code.");
+      }
+      const data = await response.json();
+      throw new Error(data.message || "Failed to verify room");
+    }
+  };
+
+  const joinRoom = async (token) => {
+    const response = await fetch(`${API_BASE_URL}/room/${formState.roomCode}/join`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.message || "Failed to join room");
+    }
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setErrorMessage("");
-    setSuccessMessage("");
+    clearMessages();
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+      updateFormState({ errorMessage: "Please log in to join a room" });
+      navigate('/login');
+      return;
+    }
 
     try {
-      // Get the authentication token
-      const token = localStorage.getItem('token');
-      if (!token) {
-        setErrorMessage("Please log in to join a room");
-        navigate('/login');
-        return;
-      }
-
-      // First verify the room exists
-      const checkRoomResponse = await fetch(`http://localhost:3002/api/room/${roomCode}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      if (!checkRoomResponse.ok) {
-        if (checkRoomResponse.status === 404) {
-          setErrorMessage("Room not found. Please check the room code.");
-        } else {
-          const data = await checkRoomResponse.json();
-          setErrorMessage(data.message || "Failed to verify room");
-        }
-        return;
-      }
-
-      // Join the room
-      const joinResponse = await fetch(`http://localhost:3002/api/room/${roomCode}/join`, {
-        method: "POST",
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (!joinResponse.ok) {
-        const data = await joinResponse.json();
-        setErrorMessage(data.message || "Failed to join room");
-        return;
-      }
-
-      // If joining was successful, navigate to the waiting room
-      setSuccessMessage("Joined room successfully!");
-      navigate(`/room/${roomCode}`);
+      await verifyRoom(token);
+      await joinRoom(token);
       
+      updateFormState({ successMessage: "Joined room successfully!" });
+      navigate(`/room/${formState.roomCode}`);
     } catch (error) {
-      setErrorMessage("Failed to join the room. Please check your connection.");
       console.error("Error:", error);
+      updateFormState({ 
+        errorMessage: error.message || "Failed to join the room. Please check your connection." 
+      });
     }
   };
 
-  // If user is not logged in, redirect to login
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -89,22 +91,23 @@ const Join = () => {
           <input
             type="text"
             id="roomCode"
-            value={roomCode}
-            onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
+            value={formState.roomCode}
+            onChange={(e) => updateFormState({ 
+              roomCode: e.target.value.toUpperCase() 
+            })}
             required
             maxLength={4}
             placeholder="Enter room code"
             className="room-code-input"
           />
         </div>
-        
-        <div className="form-group">
-          <label>Your Avatar:</label>
-          <PixelArtConverter onImageConverted={handleImageConverted} />
-        </div>
 
-        {errorMessage && <p className="error-message">{errorMessage}</p>}
-        {successMessage && <p className="success-message">{successMessage}</p>}
+        {formState.errorMessage && (
+          <p className="error-message">{formState.errorMessage}</p>
+        )}
+        {formState.successMessage && (
+          <p className="success-message">{formState.successMessage}</p>
+        )}
         
         <button className="join-button" type="submit">
           Join Room

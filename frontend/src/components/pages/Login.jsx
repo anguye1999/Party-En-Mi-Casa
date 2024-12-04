@@ -3,6 +3,24 @@ import { useNavigate } from "react-router-dom";
 import "../../styles/Login.css";
 import "../../styles/App.css";
 
+const API_BASE_URL = "http://localhost:3002/api";
+const ENDPOINTS = {
+  login: `${API_BASE_URL}/login`,
+  signup: `${API_BASE_URL}/signup`,
+  user: `${API_BASE_URL}/user`
+};
+
+const loginUser = async (username, password) => {
+  const response = await fetch(ENDPOINTS.login, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ username, password }),
+  });
+  return await response.json();
+};
+
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -13,26 +31,17 @@ const Login = () => {
     event.preventDefault();
     setErrorMessage("");
 
-    const response = await fetch("http://localhost:3002/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username, password }),
-    });
-
     try {
-      const data = await response.json();
+      const data = await loginUser(username, password);
 
-      if (response.ok && data.success) {
+      if (data.success) {
         localStorage.setItem("token", data.token);
-        console.log("Login successful, token stored:", data.token);
+        localStorage.setItem("username", data.user.username);
         navigate("/home");
       } else {
         setErrorMessage(data.message || "Login failed");
       }
     } catch (error) {
-      console.error("Error:", error);
       setErrorMessage("An error occurred during login");
     }
   };
@@ -64,7 +73,7 @@ const Login = () => {
         </div>
         {errorMessage && <p className="error-message">{errorMessage}</p>}
         <button type="submit">Login</button>
-        <button onClick={() => navigate("/signup")}>Create an Account</button>
+        <button type="button" onClick={() => navigate("/signup")}>Create an Account</button>
       </form>
     </div>
   );

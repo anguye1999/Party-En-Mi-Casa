@@ -9,11 +9,34 @@ import express from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/user.js";
+import authMiddleware from "../middleware/auth.js";
 
 const router = express.Router();
 
 // JWT secret key, loaded from environment variables.
 const JWT_SECRET = process.env.JWT_SECRET;
+
+// API route for getting current user data
+router.get("/user", authMiddleware, async (req, res) => {
+  try {
+    // Find the user by ID from the JWT token
+    const user = await User.findById(req.userId);
+    
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Return user data without sensitive information
+    res.json({
+      username: user.username,
+      email: user.email,
+      avatar: user.avatar
+    });
+  } catch (error) {
+    console.error("Error fetching user: ", error);
+    res.status(500).json({ message: "Error fetching user data" });
+  }
+});
 
 // API route for handling user login.
 router.post("/login", async (req, res) => {

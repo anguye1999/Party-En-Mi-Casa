@@ -5,65 +5,105 @@ import Footer from "../Footer";
 import Header from "../Header";
 import "../../styles/WaitingRoom.css";
 
+const API_BASE_URL = "http://localhost:3002/api";
+const CLIENT_URL = "http://localhost:3000";
+const POLLING_INTERVAL = 5000;
+const QR_CODE_SIZE = 200;
+
 const WaitingRoom = () => {
   const { code } = useParams();
-  const [fiesteros, setFiesteros] = useState([]);
   const navigate = useNavigate();
+  const [fiesteros, setFiesteros] = useState([]);
   const [gameChoice, setGameChoice] = useState("");
+  const [error, setError] = useState("");
 
-  useEffect(() => {
-    const fetchRoomData = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(`http://localhost:3002 /api/room/${code}`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        
-        if (!response.ok) {
-          throw new Error('Failed to fetch room data');
+  const fetchRoomData = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${API_BASE_URL}/room/${code}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
         }
-        
-        const data = await response.json();
-        setFiesteros(data.fiesteros);
-      } catch (error) {
-        console.error("Error fetching room data:", error);
+      });
+      
+      if (!response.ok) {
+        if (response.status === 404) {
+          setError("Room not found");
+          navigate("/home");
+          return;
+        }
+        throw new Error('Failed to fetch room data');
       }
-    };
-
-    // Initial fetch
-    fetchRoomData();
-
-    // Set up polling to update room data every 5 seconds
-    const pollInterval = setInterval(fetchRoomData, 5000);
-
-    const storedGameChoice = localStorage.getItem("gameChoice");
-    setGameChoice(storedGameChoice);
-
-    // Cleanup polling on component unmount
-    return () => clearInterval(pollInterval);
-  }, [code]);
-
-  const handleVamosClick = () => {
-    if (gameChoice === "Game Uno") {
-      navigate(`/room/${code}/gameuno`);
-    } else {
-      console.log("Vamos clicked, but no action taken for:", gameChoice);
+      
+      const data = await response.json();
+      setFiesteros(data.fiesteros);
+    } catch (error) {
+      console.error("Error fetching room data:", error);
+      setError("Failed to load room data");
     }
   };
+
+  const startGame = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const startResponse = await fetch(`${API_BASE_URL}/room/${code}/start`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+  
+      if (!startResponse.ok) {
+        throw new Error('Failed to start game');
+      }
+  
+      if (gameChoice === "Game Uno") {
+        navigate(`/room/${code}/gameuno`);
+      } else {
+        console.log("Vamos clicked, but no action taken for:", gameChoice);
+      }
+    } catch (error) {
+      console.error("Error starting game:", error);
+      setError("Failed to start game");
+    }
+  };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
+    fetchRoomData();
+    const pollInterval = setInterval(fetchRoomData, POLLING_INTERVAL);
+    setGameChoice(localStorage.getItem("gameChoice"));
+
+    return () => clearInterval(pollInterval);
+  }, [code, navigate]);
+
+  const renderAvatar = (fiestero) => (
+    <div className="fiestero-avatar">
+      <img
+        src={fiestero.avatar || "/src/assets/char_icon.png"}
+        alt={`${fiestero.username}'s avatar`}
+        className="user-avatar"
+      />
+    </div>
+  );
 
   return (
     <div className="waiting-room">
       <Header title="Waiting Room" />
+      {error && <div className="error-message">{error}</div>}
       <div className="waiting-room-container">
         <div className="code-box eight-bit-box">
           <h2>Code De Habitación</h2>
           <p className="room-code">{code}</p>
           <QRCodeCanvas
             className="QR-code"
-            value={`http://localhost:3000/${code}`}
-            size={200}
+            value={`${CLIENT_URL}/join/${code}`}
+            size={QR_CODE_SIZE}
           />
         </div>
         <div className="fiesteros-box eight-bit-box">
@@ -71,21 +111,7 @@ const WaitingRoom = () => {
           <ul className="fiesteros-list">
             {fiesteros.map((fiestero, index) => (
               <li key={index} className="fiestero-item">
-                <div className="fiestero-avatar">
-                  {fiestero.avatar ? (
-                    <img
-                      src={fiestero.avatar}
-                      alt={`${fiestero.username}'s avatar`}
-                      className="user-avatar"
-                    />
-                  ) : (
-                    <img
-                      src="/src/assets/char_icon.png"
-                      alt="Default avatar"
-                      className="user-avatar"
-                    />
-                  )}
-                </div>
+                {renderAvatar(fiestero)}
                 <span className="fiestero-username">{fiestero.username}</span>
               </li>
             ))}
@@ -101,7 +127,8 @@ const WaitingRoom = () => {
         </button>
         <button
           className="footer-button vamos-button"
-          onClick={handleVamosClick}
+          onClick={startGame}
+          disabled={fiesteros.length < 1}
         >
           ¡VAMOS!
         </button>
