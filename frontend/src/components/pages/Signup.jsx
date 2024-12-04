@@ -50,10 +50,9 @@ const Signup = () => {
         username: lowercasedUsername,
         email: lowercasedEmail,
         password,
-        avatar: avatar // Include the converted avatar
+        avatar: avatar
       };
 
-      // Make signup request using Axios
       const response = await axios.post(
         "http://localhost:3002/api/signup", 
         signupData,
@@ -72,15 +71,11 @@ const Signup = () => {
       // Handle signup errors
       console.error("Error during signup:", error);
       
-      // Check if the error response has a specific message
       if (error.response) {
-        // Server responded with an error message
         setError(error.response.data.message || "Signup failed. Please try again.");
       } else if (error.request) {
-        // Request was made but no response received
         setError("No response from server. Please check your connection.");
       } else {
-        // Something else went wrong
         setError("Signup failed. Please try again.");
       }
     }

@@ -1,134 +1,198 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { RiTimerFlashLine } from "react-icons/ri";
+import { FaCheck, FaTimes} from "react-icons/fa";
 import Header from "../Header";
 import Footer from "../Footer";
 import "../../styles/GameUno.css";
 
+const WS_BASE_URL = "ws://localhost:3001";
 const API_BASE_URL = "http://localhost:3002/api";
-const ROOM_API_URL = "http://localhost:3001/api";
 const BOUNCE_DURATION = 1000;
 const INITIAL_BOUNCE_STATE = [false, false, false, false];
 
 const EVENT_TYPES = {
-  GAME_START: 'GAME_START',
-  NEXT_QUESTION: 'NEXT_QUESTION',
-  TIME_UPDATE: 'TIME_UPDATE',
-  GAME_OVER: 'GAME_OVER'
+  GAME_START: "game_start",
+  NEXT_QUESTION: "next_question",
+  TIME_UPDATE: "time_update",
+  GAME_OVER: "game_over",
+  USER_JOINED: "user_joined",
+  USER_LEFT: "user_left",
+  ANSWER_SUBMITTED: "answer_submitted",
+  ROOM_STATE: "room_state"
 };
 
 const GameUno = () => {
   const { code } = useParams();
   const navigate = useNavigate();
-  
+
   const [bounce, setBounce] = useState(INITIAL_BOUNCE_STATE);
   const [fiesteros, setFiesteros] = useState([]);
   const [question, setQuestion] = useState("Waiting for game to start...");
   const [answers, setAnswers] = useState(["", "", "", ""]);
   const [timeRemaining, setTimeRemaining] = useState(30);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
-  const [gameOver, setGameOver] = useState(false);
-  const [scores, setScores] = useState([]);
+  const [isCorrect, setIsCorrect] = useState(null);
+  const [showResult, setShowResult] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [socket, setSocket] = useState(null);
+  const [isTimerLow, setIsTimerLow] = useState(false);
+  const [game_over, setGameOver] = useState(false);
+  const [scores, setScores] = useState([]);
 
-  const fetchRoomData = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(`${ROOM_API_URL}/room/${code}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch room data");
-      }
-
-      const data = await response.json();
-      setFiesteros(data.fiesteros);
-    } catch (error) {
-      console.error(error);
-      setErrorMessage("Failed to load game room data. Please try again.");
-    }
-  };
-
+  // Handle game events
   const handleGameEvent = (data) => {
+    console.log("Handling game event:", data);
+    
     switch (data.type) {
+      case EVENT_TYPES.ROOM_STATE:
+        console.log("ROOM_STATE event:", data);
+        if (data.roomData.gameState) {
+          const { gameState } = data.roomData;
+          setQuestion(gameState.questions[gameState.currentQuestion].question);
+          setAnswers(gameState.questions[gameState.currentQuestion].answers);
+          setTimeRemaining(gameState.timeRemaining);
+          setScores(gameState.players);
+        }
+        setFiesteros(data.roomData.fiesteros);
+        break;
+
       case EVENT_TYPES.GAME_START:
-      case EVENT_TYPES.NEXT_QUESTION:
-        setQuestion(data.payload.currentQuestion.question);
-        setAnswers(data.payload.currentQuestion.answers);
-        setTimeRemaining(data.payload.timeRemaining);
+        console.log("GAME_START event:", data);
+        setQuestion(data.currentQuestion.question);
+        setAnswers(data.currentQuestion.answers);
+        setTimeRemaining(data.timeRemaining);
         setSelectedAnswer(null);
+        setBounce(INITIAL_BOUNCE_STATE);
+        setGameOver(false);
+        break;
+
+      case EVENT_TYPES.NEXT_QUESTION:
+        console.log("NEXT_QUESTION event:", data);
+        setQuestion(data.currentQuestion.question);
+        setAnswers(data.currentQuestion.answers);
+        setTimeRemaining(data.timeRemaining);
+        setSelectedAnswer(null);
+        setIsCorrect(null);
+        setShowResult(false);
         setBounce(INITIAL_BOUNCE_STATE);
         break;
 
       case EVENT_TYPES.TIME_UPDATE:
-        setTimeRemaining(data.payload.timeRemaining);
+        console.log("TIME_UPDATE event:", data);
+        setTimeRemaining(data.timeRemaining);
         break;
 
       case EVENT_TYPES.GAME_OVER:
+        console.log("GAME_OVER event:", data);
         setGameOver(true);
-        setScores(data.payload.finalScores);
+        setScores(data.finalScores);
         navigate(`/room/${code}/results`);
         break;
 
+      case EVENT_TYPES.USER_JOINED:
+        console.log("USER_JOINED event:", data);
+        setFiesteros(prev => {
+          if (!prev.some(f => f.username === data.username)) {
+            return [...prev, { username: data.username, avatar: data.avatar }];
+          }
+          return prev;
+        });
+        break;
+
+      case EVENT_TYPES.USER_LEFT:
+        console.log("USER_LEFT event:", data);
+        setFiesteros(prev => prev.filter(f => f.userId !== data.userId));
+        break;
+
+      case EVENT_TYPES.ANSWER_SUBMITTED:
+        console.log("ANSWER_SUBMITTED event:", data);
+        console.log(data.username)
+        if (data.username === localStorage.getItem("username")) {
+          console.log("isCorrect value: ", data.isCorrect);
+          setIsCorrect(data.isCorrect);
+          setShowResult(true);
+        }
+        break;
+
       default:
+        console.warn("Unknown event type:", data.type);
         break;
     }
   };
 
-  const submitAnswer = async (index) => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(`${API_BASE_URL}/room/${code}/answer`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ answer: index })
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to submit answer');
-      }
-    } catch (error) {
-      console.error('Error submitting answer:', error);
+  // Handle answer selection
+  const handleAnswerSelect = (index) => {
+    if (selectedAnswer !== null || timeRemaining <= 0 || !socket) {
+      return;
     }
-  };
-
-  const handleAnswerSelect = async (index) => {
-    if (selectedAnswer !== null || timeRemaining <= 0) return;
 
     const newBounce = [...bounce];
     newBounce[index] = true;
     setBounce(newBounce);
     setSelectedAnswer(index);
-    await submitAnswer(index);
+
+    // Send answer through WebSocket
+    socket.send(JSON.stringify({
+      type: "submit_answer",
+      answer: index
+    }));
+
+    setShowResult(true);
   };
 
-  useEffect(() => {
-    fetchRoomData();
-  }, [code]);
-
+  // WebSocket connection management
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const eventSource = new EventSource(
-      `${API_BASE_URL}/room/${code}/events?token=${token}`
-    );
+    if (!token) {
+      navigate("/login");
+      return;
+    }
 
-    eventSource.onmessage = (event) => {
-      handleGameEvent(JSON.parse(event.data));
+    console.log("Connecting to WebSocket...");
+    const ws = new WebSocket(`${WS_BASE_URL}?token=${token}`);
+    setSocket(ws);
+
+    ws.onopen = () => {
+      console.log("WebSocket connected, joining room:", code);
+      ws.send(JSON.stringify({
+        type: "join_room",
+        roomCode: code
+      }));
     };
 
-    eventSource.onerror = (error) => {
-      console.error("SSE Error:", error);
-      eventSource.close();
+    ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        handleGameEvent(data);
+      } catch (error) {
+        console.error("Error handling WebSocket message:", error);
+      }
     };
 
-    return () => eventSource.close();
+    ws.onerror = (error) => {
+      console.error("WebSocket error:", error);
+      setErrorMessage("Connection error. Please refresh the page.");
+    };
+
+    ws.onclose = () => {
+      console.log("WebSocket disconnected");
+      setErrorMessage("Connection lost. Please refresh the page.");
+    };
+
+    return () => {
+      if (ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({
+          type: "leave_room"
+        }));
+        ws.close();
+      }
+    };
   }, [code, navigate]);
 
+  // Bounce effect reset
   useEffect(() => {
-    if (bounce.some(b => b)) {
+    if (bounce.some((b) => b)) {
       const timer = setTimeout(() => {
         setBounce(INITIAL_BOUNCE_STATE);
       }, BOUNCE_DURATION);
@@ -136,10 +200,20 @@ const GameUno = () => {
     }
   }, [bounce]);
 
+  useEffect(() => {
+    setIsTimerLow(timeRemaining <= 5);
+  }, [timeRemaining]);
+
   return (
     <div className="gameuno-container">
       <Header title="Game Uno" />
-      <div className="timer">Time Remaining: {timeRemaining}s</div>
+      <div className="timer">
+        {timeRemaining}s
+        <RiTimerFlashLine 
+          className={`timer-icon ${isTimerLow ? 'timer-warning' : ''}`}
+          size={80}
+        />
+        </div>
 
       <section className="question-section">
         <p>{question}</p>
@@ -148,25 +222,38 @@ const GameUno = () => {
       <div className="grid-section">
         {answers.map((answer, index) => (
           <div
-            key={index}
-            className={`grid-item ${bounce[index] ? "bounce" : ""} ${
-              selectedAnswer === index ? "selected" : ""
-            } ${timeRemaining <= 0 ? "disabled" : ""}`}
-            onClick={() => handleAnswerSelect(index)}
-          >
+          key={index}
+          className={`grid-item 
+            ${bounce[index] ? "bounce" : ""} 
+            ${selectedAnswer === index ? "selected" : ""} 
+            ${timeRemaining <= 0 || selectedAnswer !== null ? "disabled" : ""}
+            ${selectedAnswer === index ? "selected-answer" : ""}`
+          }
+          onClick={() => handleAnswerSelect(index)}
+        >
             {answer}
           </div>
         ))}
       </div>
+
+      {showResult && isCorrect !== null && (
+        <div className={`result-indicator ${isCorrect ? 'correct' : 'incorrect'}`}>
+          {isCorrect ? (
+            <FaCheck className="result-icon correct" />
+          ) : (
+            <FaTimes className="result-icon incorrect" />
+          )}
+        </div>
+      )}
 
       <Footer>
         <div className="fiesteros-list">
           {fiesteros.map((fiestero, index) => (
             <div key={index} className="fiestero-item">
               {fiestero.avatar && (
-                <img 
-                  src={fiestero.avatar} 
-                  alt={`${fiestero.username}'s avatar`} 
+                <img
+                  src={fiestero.avatar}
+                  alt={`${fiestero.username}'s avatar`}
                   className="fiestero-avatar"
                 />
               )}

@@ -3,14 +3,15 @@ import { useNavigate } from "react-router-dom";
 import Button from "../Button.jsx";
 import Footer from "../Footer.jsx";
 import Header from "../Header.jsx";
+import { GAMES } from "../../constants";
 import "../../styles/Home.css";
 
 const API_BASE_URL = "http://localhost:3002/api";
 
 const GAME_BUTTONS = [
-  { label: "Game Uno", className: "button-yellow" },
-  { label: "Game Dos", className: "button-pink" },
-  { label: "Game Tres", className: "button-blue" }
+  { label: GAMES.UNO, className: "button-yellow" },
+  { label: GAMES.DOS, className: "button-pink" },
+  { label: GAMES.TRES, className: "button-blue" }
 ];
 
 const Home = () => {
@@ -35,21 +36,20 @@ const Home = () => {
 
   const handleClick = async (gameChoice) => {
     const token = localStorage.getItem("token");
-
+  
     if (!token) {
       console.error("No token found, redirecting to login");
       navigate("/login");
       return;
     }
-
+  
     setLoading(true);
-
+  
     try {
       const { roomCode } = await createRoom(token);
       console.log("Button clicked:", gameChoice);
-      console.log("Generated room code:", roomCode);
-      
       localStorage.setItem("gameChoice", gameChoice);
+      console.log("Stored game choice:", localStorage.getItem("gameChoice"));
       navigate(`/room/${roomCode}`);
     } catch (error) {
       console.error("Error creating room:", error);

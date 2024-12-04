@@ -66,7 +66,7 @@ const Header = ({ title }) => {
     <header className="header">
       <div className="header-left" onClick={handleLogoClick} style={{ cursor: 'pointer' }}>
         <img 
-          src="/src/assets/char_icon.png" 
+          src="/char_icon.png" 
           alt="Logo" 
           className="header-icon"
         />

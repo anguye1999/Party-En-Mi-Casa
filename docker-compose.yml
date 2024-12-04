@@ -16,9 +16,11 @@ services:
   backend:
     build: ./backend
     ports:
-      - 3002:3002
+      - 3002:3002 # REST API
+      - 3001:3001 # Websocket
     depends_on:
       - mongo
+      - redis
     env_file:
       - .env
   redis:
