@@ -5,7 +5,7 @@
   --avatar-size: 100px;
   --room-code-size: 8vw;
   --heading-size: 2vw;
-  --username-size: 2rem;
+  --username-size: 1.5rem;
   
   display: flex;
   flex-direction: column;
@@ -86,6 +86,7 @@
 h2 {
   font-size: var(--heading-size);
   align-self: center;
+  font-size: var(--heading-size);
 }
 
 .fiestero-username {
@@ -101,4 +102,74 @@ h2 {
   color: var(--error);
   text-align: center;
   padding: 1rem;
+}
+
+/* Media Queries for Mobile Responsiveness */
+@media screen and (max-width: 768px) {
+  .waiting-room-container {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+  }
+
+  .waiting-room .header,
+  .waiting-room .footer {
+    display: none;
+  }
+
+  .eight-bit-box {
+    width: 100%;
+    margin: 0.5rem 0;
+    height: auto;
+    padding: 1rem;
+  }
+
+  h2 {
+    font-size: 4.5vw;
+  }
+
+  .room-code {
+    font-size: 10vw;
+    font-weight: bold;
+  }
+
+  .fiesteros-box {
+    width: 100%;
+    padding: 1rem;
+    margin-top: 1rem;
+  }
+
+  .fiesteros-list {
+    font-size: 4vw;
+  }
+
+  .fiestero-item {
+    font-size: 3vw;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .fiestero-avatar {
+    width: 8vw;
+    height: 8vw;
+    margin-right: 10px;
+  }
+
+  .fiestero-username {
+    font-size: 1rem;
+    color: var(--dark);
+  }
+  
+  .user-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .QR-code {
+    margin-top: 2rem;
+    width: 50vw;
+    height: 50vw;
+  }
 }

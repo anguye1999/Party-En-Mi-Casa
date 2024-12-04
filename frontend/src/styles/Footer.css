@@ -77,3 +77,10 @@
 .new-game-button:hover {
   background-color: var(--green);
 }
+
+/* Media Queries for Mobile Responsiveness */
+@media (max-width: 768px) {
+  p {
+    font-size: 1rem;
+  }
+}
