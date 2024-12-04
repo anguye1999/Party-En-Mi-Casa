@@ -64,21 +64,28 @@ const GameUno = () => {
     switch (data.type) {
       case EVENT_TYPES.ROOM_STATE:
         console.log("ROOM_STATE event:", data);
-        if (data.roomData.gameState) {
-          const { gameState } = data.roomData;
-          setQuestion(gameState.questions[gameState.currentQuestion].question);
-          setAnswers(gameState.questions[gameState.currentQuestion].answers);
-          setTimeRemaining(gameState.timeRemaining);
-          // setScores(gameState.players);
-          setScores(
-            data.roomData.players.map((player) => ({
+        if (data.roomData) {
+          if (data.roomData.gameState) {
+            const { gameState } = data.roomData;
+            setQuestion(gameState.questions[gameState.currentQuestion].question);
+            setAnswers(gameState.questions[gameState.currentQuestion].answers);
+            setTimeRemaining(gameState.timeRemaining);
+          }
+          
+          // Safely handle scores
+          if (data.roomData.players && Array.isArray(data.roomData.players)) {
+            setScores(data.roomData.players.map((player) => ({
               userId: player.userId,
               username: player.username,
               score: player.score || 0,
-            }))
-          );
+            })));
+          }
+
+          // Safely handle fiesteros
+          if (data.roomData.fiesteros && Array.isArray(data.roomData.fiesteros)) {
+            setFiesteros(data.roomData.fiesteros);
+          }
         }
-        setFiesteros(data.roomData.fiesteros);
         break;
 
       case EVENT_TYPES.GAME_START:
@@ -124,26 +131,32 @@ const GameUno = () => {
         });
         break;
 
-      case EVENT_TYPES.USER_LEFT:
-        console.log("USER_LEFT event:", data);
-        setFiesteros(prev => prev.filter(f => f.userId !== data.userId));
+      case EVENT_TYPES.ERROR:
+        console.error("Game error:", data.message);
+        setErrorMessage(data.message);
         break;
-
+  
       case EVENT_TYPES.ANSWER_SUBMITTED:
         console.log("ANSWER_SUBMITTED event:", data);
-        console.log(data.userId)
         if (data.userId === currentUserId) {
-          console.log("isCorrect value: ", data.isCorrect);
           setIsCorrect(data.isCorrect);
           setShowResult(true);
-
-          if (data.isCorrect) {
-            setScores((prevScores) => 
-              prevScores.map((player) =>
-                player.userId === data.userId
-                  ? { ...player, score: player.score + 1 } : player));
-          }
         }
+        
+        // Update all player stats
+        setScores(prevScores => 
+          prevScores.map(player => 
+            player.userId === data.userId 
+              ? {
+                  ...player,
+                  score: data.playerStats.score,
+                  correctAnswers: data.playerStats.correctAnswers,
+                  bestStreak: data.playerStats.bestStreak,
+                  avgResponseTime: data.playerStats.avgResponseTime
+                }
+              : player
+          )
+        );
         break;
 
       default:
@@ -279,16 +292,16 @@ const GameUno = () => {
 
       <Footer>
         <div className="fiesteros-list">
-          {fiesteros.map((fiestero, index) => (
+          {Array.isArray(fiesteros) && fiesteros.map((fiestero, index) => (
             <div key={index} className="fiestero-item">
-              {fiestero.avatar && (
+              {fiestero && fiestero.avatar && (
                 <img
                   src={fiestero.avatar}
                   alt={`${fiestero.username}'s avatar`}
                   className="fiestero-avatar"
                 />
               )}
-              <span>{fiestero.username}</span>
+              <span>{fiestero?.username || 'Unknown Player'}</span>
             </div>
           ))}
         </div>

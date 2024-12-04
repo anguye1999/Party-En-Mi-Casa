@@ -188,7 +188,7 @@
 }
 
 .result-icon {
-  font-size: 150px;
+  font-size: 50rem;
 }
 
 .result-icon.correct {
@@ -196,7 +196,7 @@
 }
 
 .result-icon.incorrect {
-  color: #f44336;
+  color: red;
 }
 
 .timer {
