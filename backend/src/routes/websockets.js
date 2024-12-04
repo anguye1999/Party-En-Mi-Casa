@@ -150,11 +150,17 @@ export const createWebSocketRouter = (server, jwtSecret) => {
             }
             
             try {
+              const roomData = await getRoomData(client.roomCode);
+              const currentQuestionIndex = roomData.gameState.currentQuestion;
+              const correctAnswer = roomData.gameState.questions[currentQuestionIndex].correctAnswer;
+              const isCorrect = message.answer === correctAnswer;
+
               // Handle answer submission
               broadcastToRoom(client.roomCode, {
                 type: "answer_submitted",
                 userId: client.userId,
-                answer: message.answer
+                answer: message.answer,
+                isCorrect: isCorrect,
               });
             } catch (error) {
               console.error('Error submitting answer:', error);

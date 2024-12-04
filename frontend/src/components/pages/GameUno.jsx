@@ -40,6 +40,23 @@ const GameUno = () => {
   const [game_over, setGameOver] = useState(false);
   const [scores, setScores] = useState([]);
 
+  // Decode JWT to extract userId
+  const parseJwt = (token) => {
+    try {
+      const base64Url = token.split(".")[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      return JSON.parse(atob(base64));
+    } catch (error) {
+      console.error("Error parsing JWT:", error);
+      return null;
+    }
+  };
+
+  // Extract userId from the token
+  const token = localStorage.getItem("token");
+  const decodedToken = token ? parseJwt(token) : null;
+  const currentUserId = decodedToken ? decodedToken.userId : null;
+
   // Handle game events
   const handleGameEvent = (data) => {
     console.log("Handling game event:", data);
@@ -52,7 +69,14 @@ const GameUno = () => {
           setQuestion(gameState.questions[gameState.currentQuestion].question);
           setAnswers(gameState.questions[gameState.currentQuestion].answers);
           setTimeRemaining(gameState.timeRemaining);
-          setScores(gameState.players);
+          // setScores(gameState.players);
+          setScores(
+            data.roomData.players.map((player) => ({
+              userId: player.userId,
+              username: player.username,
+              score: player.score || 0,
+            }))
+          );
         }
         setFiesteros(data.roomData.fiesteros);
         break;
@@ -107,11 +131,18 @@ const GameUno = () => {
 
       case EVENT_TYPES.ANSWER_SUBMITTED:
         console.log("ANSWER_SUBMITTED event:", data);
-        console.log(data.username)
-        if (data.username === localStorage.getItem("username")) {
+        console.log(data.userId)
+        if (data.userId === currentUserId) {
           console.log("isCorrect value: ", data.isCorrect);
           setIsCorrect(data.isCorrect);
           setShowResult(true);
+
+          if (data.isCorrect) {
+            setScores((prevScores) => 
+              prevScores.map((player) =>
+                player.userId === data.userId
+                  ? { ...player, score: player.score + 1 } : player));
+          }
         }
         break;
 
