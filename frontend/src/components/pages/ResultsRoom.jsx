@@ -82,8 +82,6 @@ const ResultsRoom = () => {
                 </div>
                 <div className="player-info">
                   <div className="place">2nd</div>
-                  {/* <div className="name">{scores[1]?.username}</div>
-                  <div className="score">{scores[1]?.score} pts</div> */}
                 </div>
               </div>
             )}
@@ -96,8 +94,6 @@ const ResultsRoom = () => {
                 </div>
                 <div className="player-info">
                   <div className="place">1st</div>
-                  {/* <div className="name">{scores[0]?.username}</div>
-                  <div className="score">{scores[0]?.score} pts</div> */}
                 </div>
               </div>
             )}
@@ -110,8 +106,6 @@ const ResultsRoom = () => {
                 </div>
                 <div className="player-info">
                   <div className="place">3rd</div>
-                  {/* <div className="name">{scores[2]?.username}</div>
-                  <div className="score">{scores[2]?.score} pts</div> */}
                 </div>
               </div>
             )}
@@ -158,15 +152,9 @@ const ResultsRoom = () => {
       </div>
 
       <Footer>
-        <button className="footer-button back-button" onClick={handleBack}>
-          Back
-        </button>
-        <button className="footer-button choose-game-button" onClick={handleChooseGame}>
-          Choose Game
-        </button>
-        <button className="footer-button new-game-button" onClick={handleNewGame}>
-          New Game
-        </button>
+        <button className="footer-button back-button" onClick={handleBack}>Back</button>
+        <button className="footer-button choose-game-button" onClick={handleChooseGame}>Choose Game</button>
+        <button className="footer-button new-game-button" onClick={handleNewGame}>New Game</button>
       </Footer>
     </div>
   );
