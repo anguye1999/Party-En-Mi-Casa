@@ -22,31 +22,42 @@ const Join = () => {
   };
 
   const verifyRoom = async (token) => {
-    const response = await fetch(`${API_BASE_URL}/room/${formState.roomCode}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-
-    if (!response.ok) {
-      if (response.status === 404) {
-        throw new Error("Room not found. Please check the room code.");
+    try {
+      const response = await fetch(`${API_BASE_URL}/room/${formState.roomCode}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+  
+      if (!response.ok) {
+        const text = await response.text();
+  
+        if (response.status === 404) {
+          throw new Error("Room not found. Please check the room code.");
+        }
+        throw new Error("Failed to verify room");
       }
-      const data = await response.json();
-      throw new Error(data.message || "Failed to verify room");
+    } catch (error) {
+      throw error;
     }
   };
-
+  
   const joinRoom = async (token) => {
-    const response = await fetch(`${API_BASE_URL}/room/${formState.roomCode}/join`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
+    try {
+      const response = await fetch(`${API_BASE_URL}/room/${formState.roomCode}/join`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+  
+      if (!response.ok) {
+        const text = await response.text();
+        
+        throw new Error("Failed to join room");
       }
-    });
-
-    if (!response.ok) {
-      const data = await response.json();
-      throw new Error(data.message || "Failed to join room");
+    } catch (error) {
+      console.error('Full error:', error);
+      throw error;
     }
   };
 
