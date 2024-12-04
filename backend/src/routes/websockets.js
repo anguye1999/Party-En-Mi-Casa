@@ -2,10 +2,14 @@ import { WebSocketServer } from "ws";
 import jwt from "jsonwebtoken";
 import { 
   getRoomData,
-  startGame
+  startGame,
+  updateRoomData,
+  EVENT_TYPES,
+  GAME_STATUS
 } from "./room.js";
 
 const HEARTBEAT_INTERVAL = 30000;
+const QUESTION_TIME_LIMIT = 10;
 
 export const createWebSocketRouter = (server, jwtSecret) => {
   const clients = new Map();
@@ -17,6 +21,8 @@ export const createWebSocketRouter = (server, jwtSecret) => {
       }
     });
   };
+
+  global.broadcastToRoom = broadcastToRoom;
 
   const heartbeat = () => {
     clients.forEach((client, ws) => {
@@ -143,24 +149,58 @@ export const createWebSocketRouter = (server, jwtSecret) => {
           case "submit_answer": {
             if (!client.roomCode) {
               ws.send(JSON.stringify({
-                type: "error",
+                type: EVENT_TYPES.ERROR,
                 message: "Not in a room"
               }));
               break;
             }
             
             try {
-              // Handle answer submission
+              const roomData = await getRoomData(client.roomCode);
+              const currentQuestionIndex = roomData.gameState.currentQuestion;
+              const correctAnswer = roomData.gameState.questions[currentQuestionIndex].correctAnswer;
+              const isCorrect = message.answer === correctAnswer;
+              
+              // Find player and update their stats
+              const playerIndex = roomData.gameState.players.findIndex(p => p.userId === client.userId);
+              if (playerIndex !== -1) {
+                const player = roomData.gameState.players[playerIndex];
+                
+                // Update response time
+                const responseTime = QUESTION_TIME_LIMIT - roomData.gameState.timeRemaining;
+                player.totalResponseTime += responseTime;
+                player.questionsAnswered++;
+                player.avgResponseTime = (player.totalResponseTime / player.questionsAnswered).toFixed(1);
+          
+                if (isCorrect) {
+                  // Update score and correct answers
+                  player.score += 100;
+                  player.correctAnswers++;
+                  
+                  // Update streak
+                  player.currentStreak++;
+                  player.bestStreak = Math.max(player.bestStreak, player.currentStreak);
+                } else {
+                  // Reset streak on wrong answer
+                  player.currentStreak = 0;
+                }
+          
+                await updateRoomData(client.roomCode, roomData);
+              }
+          
+              // Broadcast answer submission with all stats
               broadcastToRoom(client.roomCode, {
-                type: "answer_submitted",
+                type: EVENT_TYPES.ANSWER_SUBMITTED,
                 userId: client.userId,
-                answer: message.answer
+                answer: message.answer,
+                isCorrect: isCorrect,
+                playerStats: roomData.gameState.players[playerIndex]
               });
             } catch (error) {
               console.error('Error submitting answer:', error);
               ws.send(JSON.stringify({
-                type: "error",
-                message: "Failed to submit answer"
+                type: EVENT_TYPES.ERROR,
+                message: error.message || "Failed to submit answer"
               }));
             }
             break;

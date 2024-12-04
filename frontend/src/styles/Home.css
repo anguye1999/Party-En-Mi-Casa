@@ -16,7 +16,6 @@
   gap: 5vw;
 }
 
-/* Media Queries for Mobile Responsiveness */
 @media (max-width: 768px) {
   .home-container {
     padding: 2rem;

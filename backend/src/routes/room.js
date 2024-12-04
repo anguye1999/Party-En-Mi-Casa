@@ -3,17 +3,18 @@ import authMiddleware from "../middleware/auth.js";
 import redis from "../redis.js";
 import User from "../models/user.js";
 import { fetchTriviaQuestions } from "../trivia.js";
+import { GAME_CONSTANTS } from "../constants/gameConstants.js";
 
 const router = express.Router();
 const ROOM_PREFIX = "room:";
 const ROOM_CODE_LENGTH = 4;
 const ROOM_EXPIRY = 1200; // 20 minutes in seconds
-const QUESTION_TIME_LIMIT = 10;
-const MAX_QUESTIONS = 10;
+const QUESTION_TIME_LIMIT = GAME_CONSTANTS.QUESTION_TIME_LIMIT;
+const MAX_QUESTIONS = GAME_CONSTANTS.MAX_QUESTIONS;
 const timers = new Map();
 
 // Game state constants
-const GAME_STATUS = {
+export const GAME_STATUS = {
   ACTIVE: 'active',
   COMPLETED: 'completed'
 };
@@ -25,7 +26,8 @@ export const EVENT_TYPES = {
   GAME_OVER: 'game_over',
   USER_JOINED: 'user_joined',
   USER_LEFT: 'user_left',
-  ANSWER_SUBMITTED: 'answer_submitted'
+  ANSWER_SUBMITTED: 'answer_submitted',
+  ERROR: 'error'
 };
 
 const startTimer = async (roomCode, roomData, broadcastToRoom) => {
@@ -99,7 +101,13 @@ const getInitialGameState = async (fiesteros) => {
       userId: f.userId,
       username: f.username,
       score: 0,
-      avatar: f.avatar
+      avatar: f.avatar,
+      correctAnswers: 0,
+      currentStreak: 0,
+      bestStreak: 0,
+      totalResponseTime: 0,
+      questionsAnswered: 0,
+      avgResponseTime: 0
     })),
     questions
   };
@@ -294,6 +302,31 @@ router.post("/room/:roomCode/join", authMiddleware, async (req, res) => {
     } else {
       res.status(500).json({ message: "Failed to join room" });
     }
+  }
+});
+
+router.post("/room/:roomCode/start", authMiddleware, async (req, res) => {
+  try {
+    const roomCode = req.params.roomCode.toUpperCase();
+    const roomData = await getRoomData(roomCode);
+    
+    if (!roomData) {
+      return res.status(404).json({ message: "Room not found" });
+    }
+    
+    // Reset game state
+    roomData.gameState = await getInitialGameState(roomData.fiesteros);
+    await updateRoomData(roomCode, roomData);
+    
+    // If you have a reference to the WebSocket broadcast function
+    if (global.broadcastToRoom) {
+      await startGame(roomCode, global.broadcastToRoom);
+    }
+    
+    res.json({ message: "Game started successfully" });
+  } catch (error) {
+    console.error("Error starting game:", error);
+    res.status(500).json({ message: "Failed to start game" });
   }
 });
 

@@ -43,6 +43,11 @@ const Home = () => {
       return;
     }
   
+    if (gameChoice === GAMES.DOS || gameChoice === GAMES.TRES) {
+      navigate("/coming-soon");
+      return;
+    }
+  
     setLoading(true);
   
     try {

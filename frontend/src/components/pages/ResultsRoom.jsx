@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Header from "../Header";
 import Footer from "../Footer";
+import { GAME_CONSTANTS } from "../../constants/gameConstants.js"
 import "../../styles/ResultsRoom.css";
 
 const API_BASE_URL = "http://localhost:3002/api";
@@ -12,6 +13,7 @@ const ResultsRoom = () => {
   const [scores, setScores] = useState([]);
   const [showStats, setShowStats] = useState(false);
   const [error, setError] = useState(null);
+  const [isStartingGame, setIsStartingGame] = useState(false);
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -27,7 +29,9 @@ const ResultsRoom = () => {
 
         const data = await response.json();
         if (data.gameState && data.gameState.players) {
-          const sortedScores = [...data.gameState.players].sort((a, b) => b.score - a.score);
+          const sortedScores = [...data.gameState.players].sort(
+            (a, b) => b.score - a.score
+          );
           setScores(sortedScores);
         }
       } catch (error) {
@@ -41,13 +45,40 @@ const ResultsRoom = () => {
 
   const handleBack = () => navigate(`/room/${code}`);
   const handleChooseGame = () => navigate("/home");
-  const handleNewGame = () => navigate(`/room/${code}/gameuno`);
+  
+  const handleNewGame = async () => {
+    try {
+      setIsStartingGame(true);
+      const token = localStorage.getItem("token");
+      
+      // Start new game via API
+      const response = await fetch(`${API_BASE_URL}/room/${code}/start`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to start new game');
+      }
+
+      // Navigate back to game
+      navigate(`/room/${code}/gameuno`);
+    } catch (error) {
+      setError("Failed to start new game");
+      console.error(error);
+    } finally {
+      setIsStartingGame(false);
+    }
+  };
 
   const renderPerformanceStats = (player) => (
     <div className="performance-stats">
       <div className="stat-item">
         <span className="stat-label">Correct Answers:</span>
-        <span className="stat-value">{player.correctAnswers || 0}/10</span>
+        <span className="stat-value">{player.correctAnswers || 0}/{GAME_CONSTANTS.MAX_QUESTIONS}</span>
       </div>
       <div className="stat-item">
         <span className="stat-label">Best Streak:</span>
@@ -60,7 +91,7 @@ const ResultsRoom = () => {
       <div className="progress-bar">
         <div 
           className="progress" 
-          style={{ width: `${(player.correctAnswers || 0) * 10}%` }}
+          style={{ width: `${((player.correctAnswers || 0) / GAME_CONSTANTS.MAX_QUESTIONS) * 100}%` }}
         />
       </div>
     </div>
@@ -152,9 +183,25 @@ const ResultsRoom = () => {
       </div>
 
       <Footer>
-        <button className="footer-button back-button" onClick={handleBack}>Back</button>
-        <button className="footer-button choose-game-button" onClick={handleChooseGame}>Choose Game</button>
-        <button className="footer-button new-game-button" onClick={handleNewGame}>New Game</button>
+        <button className="footer-button back-button"
+          onClick={handleBack}
+          disabled={isStartingGame}
+        >
+          Back
+        </button>
+        <button className="footer-button choose-game-button"
+          onClick={handleChooseGame}
+          disabled={isStartingGame}
+        >
+          Choose Game
+        </button>
+        <button className="footer-button new-game-button"
+          onClick={handleNewGame}
+          disabled={isStartingGame}
+        >
+          {isStartingGame ? "Starting..." : "New Game"}
+        </button>
+        {error && <div className="error-message">{error}</div>}
       </Footer>
     </div>
   );
