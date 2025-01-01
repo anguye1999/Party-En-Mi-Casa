@@ -6,7 +6,7 @@
   --room-code-size: 8vw;
   --heading-size: 2vw;
   --username-size: 1.5rem;
-  
+
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -29,11 +29,11 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  
+
   background-color: var(--white);
   border: var(--box-border-width) solid #000;
   box-shadow: var(--box-border-width) var(--box-border-width) #000;
-  
+
   text-transform: uppercase;
   font-weight: bold;
 }
@@ -160,7 +160,7 @@ h2 {
     font-size: 1rem;
     color: var(--dark);
   }
-  
+
   .user-avatar {
     width: 100%;
     height: 100%;

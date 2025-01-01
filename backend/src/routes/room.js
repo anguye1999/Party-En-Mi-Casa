@@ -15,19 +15,19 @@ const timers = new Map();
 
 // Game state constants
 export const GAME_STATUS = {
-  ACTIVE: 'active',
-  COMPLETED: 'completed'
+  ACTIVE: "active",
+  COMPLETED: "completed",
 };
 
 export const EVENT_TYPES = {
-  GAME_START: 'game_start',
-  NEXT_QUESTION: 'next_question',
-  TIME_UPDATE: 'time_update',
-  GAME_OVER: 'game_over',
-  USER_JOINED: 'user_joined',
-  USER_LEFT: 'user_left',
-  ANSWER_SUBMITTED: 'answer_submitted',
-  ERROR: 'error'
+  GAME_START: "game_start",
+  NEXT_QUESTION: "next_question",
+  TIME_UPDATE: "time_update",
+  GAME_OVER: "game_over",
+  USER_JOINED: "user_joined",
+  USER_LEFT: "user_left",
+  ANSWER_SUBMITTED: "answer_submitted",
+  ERROR: "error",
 };
 
 const startTimer = async (roomCode, roomData, broadcastToRoom) => {
@@ -40,17 +40,25 @@ const startTimer = async (roomCode, roomData, broadcastToRoom) => {
   const timer = setInterval(async () => {
     try {
       const currentRoomData = await getRoomData(roomCode);
-      
-      if (!currentRoomData.gameState || currentRoomData.gameState.status !== GAME_STATUS.ACTIVE) {
+
+      if (
+        !currentRoomData.gameState ||
+        currentRoomData.gameState.status !== GAME_STATUS.ACTIVE
+      ) {
         clearInterval(timer);
         timers.delete(roomCode);
         return;
       }
 
       currentRoomData.gameState.timeRemaining--;
-      
+
       // Broadcast time update
-      await handleTimeUpdate(roomCode, currentRoomData, currentRoomData.gameState.timeRemaining, broadcastToRoom);
+      await handleTimeUpdate(
+        roomCode,
+        currentRoomData,
+        currentRoomData.gameState.timeRemaining,
+        broadcastToRoom,
+      );
 
       // Check if time is up
       if (currentRoomData.gameState.timeRemaining <= 0) {
@@ -58,7 +66,10 @@ const startTimer = async (roomCode, roomData, broadcastToRoom) => {
         timers.delete(roomCode);
 
         // Check if this was the last question
-        if (currentRoomData.gameState.currentQuestion >= currentRoomData.gameState.questions.length - 1) {
+        if (
+          currentRoomData.gameState.currentQuestion >=
+          currentRoomData.gameState.questions.length - 1
+        ) {
           await handleGameOver(roomCode, currentRoomData, broadcastToRoom);
         } else {
           // Move to next question and start new timer
@@ -67,7 +78,7 @@ const startTimer = async (roomCode, roomData, broadcastToRoom) => {
         }
       }
     } catch (error) {
-      console.error('Error in timer:', error);
+      console.error("Error in timer:", error);
       clearInterval(timer);
       timers.delete(roomCode);
     }
@@ -81,9 +92,9 @@ const startTimer = async (roomCode, roomData, broadcastToRoom) => {
 // Helper functions
 const generateRoomCode = () => {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  return Array.from({ length: ROOM_CODE_LENGTH }, 
-    () => chars.charAt(Math.floor(Math.random() * chars.length))
-  ).join('');
+  return Array.from({ length: ROOM_CODE_LENGTH }, () =>
+    chars.charAt(Math.floor(Math.random() * chars.length)),
+  ).join("");
 };
 
 const getRoomKey = (roomCode) => `${ROOM_PREFIX}${roomCode}`;
@@ -91,13 +102,13 @@ const getRoomKey = (roomCode) => `${ROOM_PREFIX}${roomCode}`;
 const getInitialGameState = async (fiesteros) => {
   let questions = await fetchTriviaQuestions();
   questions = questions.slice(0, MAX_QUESTIONS);
-  
+
   return {
     status: GAME_STATUS.ACTIVE,
     currentQuestion: 0,
     timeRemaining: QUESTION_TIME_LIMIT,
     totalQuestions: MAX_QUESTIONS,
-    players: fiesteros.map(f => ({
+    players: fiesteros.map((f) => ({
       userId: f.userId,
       username: f.username,
       score: 0,
@@ -107,9 +118,9 @@ const getInitialGameState = async (fiesteros) => {
       bestStreak: 0,
       totalResponseTime: 0,
       questionsAnswered: 0,
-      avgResponseTime: 0
+      avgResponseTime: 0,
     })),
-    questions
+    questions,
   };
 };
 
@@ -119,11 +130,13 @@ export const createRoom = async (userId, user) => {
   const roomData = {
     code: roomCode,
     gameState: null,
-    fiesteros: [{
-      userId,
-      username: user.username,
-      avatar: user.avatar
-    }]
+    fiesteros: [
+      {
+        userId,
+        username: user.username,
+        avatar: user.avatar,
+      },
+    ],
   };
 
   const roomKey = getRoomKey(roomCode);
@@ -150,18 +163,21 @@ export const updateRoomData = async (roomCode, roomData) => {
 export const startGame = async (roomCode, broadcastToRoom) => {
   const roomData = await getRoomData(roomCode);
   roomData.gameState = await getInitialGameState(roomData.fiesteros);
-  
+
   // Verify questions before proceeding
-  if (!roomData.gameState.questions || roomData.gameState.questions.length === 0) {
+  if (
+    !roomData.gameState.questions ||
+    roomData.gameState.questions.length === 0
+  ) {
     roomData.gameState.questions = getFallbackQuestions();
   }
-  
+
   await updateRoomData(roomCode, roomData);
 
   broadcastToRoom(roomCode, {
     type: EVENT_TYPES.GAME_START,
     currentQuestion: roomData.gameState.questions[0],
-    timeRemaining: QUESTION_TIME_LIMIT
+    timeRemaining: QUESTION_TIME_LIMIT,
   });
 
   // Start the timer
@@ -172,16 +188,19 @@ export const startGame = async (roomCode, broadcastToRoom) => {
 
 export const submitAnswer = async (roomCode, userId, answer) => {
   const roomData = await getRoomData(roomCode);
-  
+
   if (!roomData.gameState?.status === GAME_STATUS.ACTIVE) {
     throw new Error("No active game");
   }
 
-  const currentQuestion = roomData.gameState.questions[roomData.gameState.currentQuestion];
+  const currentQuestion =
+    roomData.gameState.questions[roomData.gameState.currentQuestion];
   const isCorrect = answer === currentQuestion.correctAnswer;
-  
+
   if (isCorrect) {
-    const playerIndex = roomData.gameState.players.findIndex(p => p.userId === userId);
+    const playerIndex = roomData.gameState.players.findIndex(
+      (p) => p.userId === userId,
+    );
     if (playerIndex !== -1) {
       roomData.gameState.players[playerIndex].score += 100;
       await updateRoomData(roomCode, roomData);
@@ -190,20 +209,30 @@ export const submitAnswer = async (roomCode, userId, answer) => {
 
   return {
     isCorrect,
-    currentScore: roomData.gameState.players.find(p => p.userId === userId)?.score
+    currentScore: roomData.gameState.players.find((p) => p.userId === userId)
+      ?.score,
   };
 };
 
-export const handleTimeUpdate = async (roomCode, roomData, timeRemaining, broadcastToRoom) => {
+export const handleTimeUpdate = async (
+  roomCode,
+  roomData,
+  timeRemaining,
+  broadcastToRoom,
+) => {
   roomData.gameState.timeRemaining = timeRemaining;
   await updateRoomData(roomCode, roomData);
   broadcastToRoom(roomCode, {
     type: EVENT_TYPES.TIME_UPDATE,
-    timeRemaining
+    timeRemaining,
   });
 };
 
-export const handleNextQuestion = async (roomCode, roomData, broadcastToRoom) => {
+export const handleNextQuestion = async (
+  roomCode,
+  roomData,
+  broadcastToRoom,
+) => {
   roomData.gameState.currentQuestion++;
 
   // Check for end of questions
@@ -213,12 +242,13 @@ export const handleNextQuestion = async (roomCode, roomData, broadcastToRoom) =>
   }
 
   roomData.gameState.timeRemaining = QUESTION_TIME_LIMIT;
-  
+
   await updateRoomData(roomCode, roomData);
   broadcastToRoom(roomCode, {
     type: EVENT_TYPES.NEXT_QUESTION,
-    currentQuestion: roomData.gameState.questions[roomData.gameState.currentQuestion],
-    timeRemaining: QUESTION_TIME_LIMIT
+    currentQuestion:
+      roomData.gameState.questions[roomData.gameState.currentQuestion],
+    timeRemaining: QUESTION_TIME_LIMIT,
   });
 
   // Start new timer for next question
@@ -237,12 +267,14 @@ export const handleGameOver = async (roomCode, roomData, broadcastToRoom) => {
 
   roomData.gameState.status = GAME_STATUS.COMPLETED;
 
-  const sortedPlayers = [...roomData.gameState.players].sort((a, b) => b.score - a.score);
+  const sortedPlayers = [...roomData.gameState.players].sort(
+    (a, b) => b.score - a.score,
+  );
 
   await updateRoomData(roomCode, roomData);
   broadcastToRoom(roomCode, {
     type: EVENT_TYPES.GAME_OVER,
-    finalScores: roomData.gameState.players
+    finalScores: roomData.gameState.players,
   });
 };
 
@@ -266,7 +298,7 @@ router.get("/room/:roomCode", authMiddleware, async (req, res) => {
     res.json({
       code: roomCode,
       fiesteros: roomData.fiesteros,
-      gameState: roomData.gameState
+      gameState: roomData.gameState,
     });
   } catch (error) {
     console.error("Error getting room:", error);
@@ -284,12 +316,14 @@ router.post("/room/:roomCode/join", authMiddleware, async (req, res) => {
     const roomData = await getRoomData(roomCode);
     const user = await User.findById(req.userId);
 
-    const isUserInRoom = roomData.fiesteros.some(f => f.userId === req.userId);
+    const isUserInRoom = roomData.fiesteros.some(
+      (f) => f.userId === req.userId,
+    );
     if (!isUserInRoom) {
       roomData.fiesteros.push({
         userId: req.userId,
         username: user.username,
-        avatar: user.avatar
+        avatar: user.avatar,
       });
       await updateRoomData(roomCode, roomData);
     }
@@ -309,20 +343,20 @@ router.post("/room/:roomCode/start", authMiddleware, async (req, res) => {
   try {
     const roomCode = req.params.roomCode.toUpperCase();
     const roomData = await getRoomData(roomCode);
-    
+
     if (!roomData) {
       return res.status(404).json({ message: "Room not found" });
     }
-    
+
     // Reset game state
     roomData.gameState = await getInitialGameState(roomData.fiesteros);
     await updateRoomData(roomCode, roomData);
-    
+
     // If you have a reference to the WebSocket broadcast function
     if (global.broadcastToRoom) {
       await startGame(roomCode, global.broadcastToRoom);
     }
-    
+
     res.json({ message: "Game started successfully" });
   } catch (error) {
     console.error("Error starting game:", error);

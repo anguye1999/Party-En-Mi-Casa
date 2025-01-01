@@ -26,7 +26,8 @@
   gap: 1vw;
 }
 
-.logout-button, .join-room-button {
+.logout-button,
+.join-room-button {
   color: #000;
   cursor: pointer;
   padding: 2vh;
@@ -106,13 +107,14 @@
     font-size: 0.75rem;
   }
 
-  .logout-button, .join-room-button {
+  .logout-button,
+  .join-room-button {
     font-size: 1rem;
     padding: 1vh;
     margin: 0.5vh, 0.5vw;
   }
 
-  .user-greeting{
+  .user-greeting {
     margin-left: 1rem;
   }
 }

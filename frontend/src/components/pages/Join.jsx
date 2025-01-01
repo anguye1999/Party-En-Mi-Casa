@@ -10,11 +10,11 @@ const Join = () => {
   const [formState, setFormState] = useState({
     roomCode: "",
     errorMessage: "",
-    successMessage: ""
+    successMessage: "",
   });
 
   const updateFormState = (updates) => {
-    setFormState(prev => ({ ...prev, ...updates }));
+    setFormState((prev) => ({ ...prev, ...updates }));
   };
 
   const clearMessages = () => {
@@ -23,13 +23,16 @@ const Join = () => {
 
   const verifyRoom = async (token) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/room/${formState.roomCode}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-  
+      const response = await fetch(
+        `${API_BASE_URL}/room/${formState.roomCode}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+
       if (!response.ok) {
         const text = await response.text();
-  
+
         if (response.status === 404) {
           throw new Error("Room not found. Please check the room code.");
         }
@@ -39,24 +42,27 @@ const Join = () => {
       throw error;
     }
   };
-  
+
   const joinRoom = async (token) => {
     try {
-      const response = await fetch(`${API_BASE_URL}/room/${formState.roomCode}/join`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-  
+      const response = await fetch(
+        `${API_BASE_URL}/room/${formState.roomCode}/join`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
       if (!response.ok) {
         const text = await response.text();
-        
+
         throw new Error("Failed to join room");
       }
     } catch (error) {
-      console.error('Full error:', error);
+      console.error("Full error:", error);
       throw error;
     }
   };
@@ -65,31 +71,33 @@ const Join = () => {
     event.preventDefault();
     clearMessages();
 
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
       updateFormState({ errorMessage: "Please log in to join a room" });
-      navigate('/login');
+      navigate("/login");
       return;
     }
 
     try {
       await verifyRoom(token);
       await joinRoom(token);
-      
+
       updateFormState({ successMessage: "Joined room successfully!" });
       navigate(`/room/${formState.roomCode}`);
     } catch (error) {
       console.error("Error:", error);
-      updateFormState({ 
-        errorMessage: error.message || "Failed to join the room. Please check your connection." 
+      updateFormState({
+        errorMessage:
+          error.message ||
+          "Failed to join the room. Please check your connection.",
       });
     }
   };
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     if (!token) {
-      navigate('/login');
+      navigate("/login");
     }
   }, [navigate]);
 
@@ -103,9 +111,11 @@ const Join = () => {
             type="text"
             id="roomCode"
             value={formState.roomCode}
-            onChange={(e) => updateFormState({ 
-              roomCode: e.target.value.toUpperCase() 
-            })}
+            onChange={(e) =>
+              updateFormState({
+                roomCode: e.target.value.toUpperCase(),
+              })
+            }
             required
             maxLength={4}
             placeholder="Enter room code"
@@ -119,7 +129,7 @@ const Join = () => {
         {formState.successMessage && (
           <p className="success-message">{formState.successMessage}</p>
         )}
-        
+
         <button className="join-button" type="submit">
           Join Room
         </button>

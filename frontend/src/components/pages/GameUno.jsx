@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { RiTimerFlashLine } from "react-icons/ri";
-import { FaCheck, FaTimes} from "react-icons/fa";
+import { FaCheck, FaTimes } from "react-icons/fa";
 import Header from "../Header";
 import Footer from "../Footer";
 import "../../styles/GameUno.css";
@@ -19,7 +19,7 @@ const EVENT_TYPES = {
   USER_JOINED: "user_joined",
   USER_LEFT: "user_left",
   ANSWER_SUBMITTED: "answer_submitted",
-  ROOM_STATE: "room_state"
+  ROOM_STATE: "room_state",
 };
 
 const GameUno = () => {
@@ -60,29 +60,36 @@ const GameUno = () => {
   // Handle game events
   const handleGameEvent = (data) => {
     console.log("Handling game event:", data);
-    
+
     switch (data.type) {
       case EVENT_TYPES.ROOM_STATE:
         console.log("ROOM_STATE event:", data);
         if (data.roomData) {
           if (data.roomData.gameState) {
             const { gameState } = data.roomData;
-            setQuestion(gameState.questions[gameState.currentQuestion].question);
+            setQuestion(
+              gameState.questions[gameState.currentQuestion].question,
+            );
             setAnswers(gameState.questions[gameState.currentQuestion].answers);
             setTimeRemaining(gameState.timeRemaining);
           }
-          
+
           // Safely handle scores
           if (data.roomData.players && Array.isArray(data.roomData.players)) {
-            setScores(data.roomData.players.map((player) => ({
-              userId: player.userId,
-              username: player.username,
-              score: player.score || 0,
-            })));
+            setScores(
+              data.roomData.players.map((player) => ({
+                userId: player.userId,
+                username: player.username,
+                score: player.score || 0,
+              })),
+            );
           }
 
           // Safely handle fiesteros
-          if (data.roomData.fiesteros && Array.isArray(data.roomData.fiesteros)) {
+          if (
+            data.roomData.fiesteros &&
+            Array.isArray(data.roomData.fiesteros)
+          ) {
             setFiesteros(data.roomData.fiesteros);
           }
         }
@@ -123,8 +130,8 @@ const GameUno = () => {
 
       case EVENT_TYPES.USER_JOINED:
         console.log("USER_JOINED event:", data);
-        setFiesteros(prev => {
-          if (!prev.some(f => f.username === data.username)) {
+        setFiesteros((prev) => {
+          if (!prev.some((f) => f.username === data.username)) {
             return [...prev, { username: data.username, avatar: data.avatar }];
           }
           return prev;
@@ -135,27 +142,27 @@ const GameUno = () => {
         console.error("Game error:", data.message);
         setErrorMessage(data.message);
         break;
-  
+
       case EVENT_TYPES.ANSWER_SUBMITTED:
         console.log("ANSWER_SUBMITTED event:", data);
         if (data.userId === currentUserId) {
           setIsCorrect(data.isCorrect);
           setShowResult(true);
         }
-        
+
         // Update all player stats
-        setScores(prevScores => 
-          prevScores.map(player => 
-            player.userId === data.userId 
+        setScores((prevScores) =>
+          prevScores.map((player) =>
+            player.userId === data.userId
               ? {
                   ...player,
                   score: data.playerStats.score,
                   correctAnswers: data.playerStats.correctAnswers,
                   bestStreak: data.playerStats.bestStreak,
-                  avgResponseTime: data.playerStats.avgResponseTime
+                  avgResponseTime: data.playerStats.avgResponseTime,
                 }
-              : player
-          )
+              : player,
+          ),
         );
         break;
 
@@ -177,10 +184,12 @@ const GameUno = () => {
     setSelectedAnswer(index);
 
     // Send answer through WebSocket
-    socket.send(JSON.stringify({
-      type: "submit_answer",
-      answer: index
-    }));
+    socket.send(
+      JSON.stringify({
+        type: "submit_answer",
+        answer: index,
+      }),
+    );
 
     setShowResult(true);
   };
@@ -199,10 +208,12 @@ const GameUno = () => {
 
     ws.onopen = () => {
       console.log("WebSocket connected, joining room:", code);
-      ws.send(JSON.stringify({
-        type: "join_room",
-        roomCode: code
-      }));
+      ws.send(
+        JSON.stringify({
+          type: "join_room",
+          roomCode: code,
+        }),
+      );
     };
 
     ws.onmessage = (event) => {
@@ -226,9 +237,11 @@ const GameUno = () => {
 
     return () => {
       if (ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify({
-          type: "leave_room"
-        }));
+        ws.send(
+          JSON.stringify({
+            type: "leave_room",
+          }),
+        );
         ws.close();
       }
     };
@@ -253,11 +266,11 @@ const GameUno = () => {
       <Header title="Game Uno" />
       <div className="timer">
         {timeRemaining}s
-        <RiTimerFlashLine 
-          className={`timer-icon ${isTimerLow ? 'timer-warning' : ''}`}
+        <RiTimerFlashLine
+          className={`timer-icon ${isTimerLow ? "timer-warning" : ""}`}
           size={80}
         />
-        </div>
+      </div>
 
       <section className="question-section">
         <p>{question}</p>
@@ -266,22 +279,23 @@ const GameUno = () => {
       <div className="grid-section">
         {answers.map((answer, index) => (
           <div
-          key={index}
-          className={`grid-item 
+            key={index}
+            className={`grid-item 
             ${bounce[index] ? "bounce" : ""} 
             ${selectedAnswer === index ? "selected" : ""} 
             ${timeRemaining <= 0 || selectedAnswer !== null ? "disabled" : ""}
-            ${selectedAnswer === index ? "selected-answer" : ""}`
-          }
-          onClick={() => handleAnswerSelect(index)}
-        >
+            ${selectedAnswer === index ? "selected-answer" : ""}`}
+            onClick={() => handleAnswerSelect(index)}
+          >
             {answer}
           </div>
         ))}
       </div>
 
       {showResult && isCorrect !== null && (
-        <div className={`result-indicator ${isCorrect ? 'correct' : 'incorrect'}`}>
+        <div
+          className={`result-indicator ${isCorrect ? "correct" : "incorrect"}`}
+        >
           {isCorrect ? (
             <FaCheck className="result-icon correct" />
           ) : (
@@ -292,18 +306,19 @@ const GameUno = () => {
 
       <Footer>
         <div className="fiesteros-list">
-          {Array.isArray(fiesteros) && fiesteros.map((fiestero, index) => (
-            <div key={index} className="fiestero-item">
-              {fiestero && fiestero.avatar && (
-                <img
-                  src={fiestero.avatar}
-                  alt={`${fiestero.username}'s avatar`}
-                  className="fiestero-avatar"
-                />
-              )}
-              <span>{fiestero?.username || 'Unknown Player'}</span>
-            </div>
-          ))}
+          {Array.isArray(fiesteros) &&
+            fiesteros.map((fiestero, index) => (
+              <div key={index} className="fiestero-item">
+                {fiestero && fiestero.avatar && (
+                  <img
+                    src={fiestero.avatar}
+                    alt={`${fiestero.username}'s avatar`}
+                    className="fiestero-avatar"
+                  />
+                )}
+                <span>{fiestero?.username || "Unknown Player"}</span>
+              </div>
+            ))}
         </div>
         {errorMessage && <div className="error-message">{errorMessage}</div>}
       </Footer>

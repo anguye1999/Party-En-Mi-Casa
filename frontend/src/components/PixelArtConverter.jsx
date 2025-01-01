@@ -8,7 +8,16 @@ const PixelArtConverter = ({ onImageConverted }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const canvasRef = useRef(null);
 
-  const processPixelCell = (ctx, imageData, newImageData, cellX, cellY, cellWidth, cellHeight, canvasWidth) => {
+  const processPixelCell = (
+    ctx,
+    imageData,
+    newImageData,
+    cellX,
+    cellY,
+    cellWidth,
+    cellHeight,
+    canvasWidth,
+  ) => {
     // Get center pixel of cell
     const centerX = Math.floor(cellX + cellWidth / 2);
     const centerY = Math.floor(cellY + cellHeight / 2);
@@ -18,7 +27,7 @@ const PixelArtConverter = ({ onImageConverted }) => {
       imageData.data[centerIndex],
       imageData.data[centerIndex + 1],
       imageData.data[centerIndex + 2],
-      imageData.data[centerIndex + 3]
+      imageData.data[centerIndex + 3],
     ];
 
     // Fill entire cell with center color
@@ -45,7 +54,7 @@ const PixelArtConverter = ({ onImageConverted }) => {
 
     const cellWidth = Math.floor(image.width / size);
     const cellHeight = Math.floor(image.height / size);
-    
+
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const newImageData = ctx.createImageData(canvas.width, canvas.height);
 
@@ -59,7 +68,7 @@ const PixelArtConverter = ({ onImageConverted }) => {
           y * cellHeight,
           cellWidth,
           cellHeight,
-          canvas.width
+          canvas.width,
         );
       }
     }
@@ -82,7 +91,10 @@ const PixelArtConverter = ({ onImageConverted }) => {
 
     const img = new Image();
     img.onload = () => {
-      const pixelatedDataUrl = convertToPixelArt(img, GRID_SIZES[gridSizeIndex]);
+      const pixelatedDataUrl = convertToPixelArt(
+        img,
+        GRID_SIZES[gridSizeIndex],
+      );
       setPreview(pixelatedDataUrl);
       onImageConverted?.(pixelatedDataUrl);
     };
@@ -116,7 +128,9 @@ const PixelArtConverter = ({ onImageConverted }) => {
                 onChange={(e) => setGridSizeIndex(parseInt(e.target.value))}
                 className="grid-size-slider"
               />
-              <span className="slider-label">{GRID_SIZES[GRID_SIZES.length - 1]}</span>
+              <span className="slider-label">
+                {GRID_SIZES[GRID_SIZES.length - 1]}
+              </span>
             </div>
           </div>
         )}

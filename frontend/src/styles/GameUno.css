@@ -152,7 +152,7 @@
 }
 
 .selected-answer {
-  transform: scale(1.0);
+  transform: scale(1);
   border-width: 0.6vw !important;
   position: relative;
   opacity: 1;
@@ -160,7 +160,7 @@
 }
 
 .selected-answer::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -192,7 +192,7 @@
 }
 
 .result-icon.correct {
-  color: #4CAF50;
+  color: #4caf50;
 }
 
 .result-icon.incorrect {
@@ -232,11 +232,11 @@
   .gameuno-container {
     padding: 2rem;
     justify-content: center;
-    height: auto; 
+    height: auto;
     align-items: center;
   }
 
-  .gameuno-container .header, 
+  .gameuno-container .header,
   .gameuno-container .footer,
   .question-section,
   .timer {
@@ -252,10 +252,10 @@
   }
 
   .grid-item {
-    display: flex; 
+    display: flex;
     justify-content: center;
     align-items: center;
-    text-align: center; 
+    text-align: center;
     word-wrap: break-word;
     overflow-wrap: break-word;
     width: 100%;

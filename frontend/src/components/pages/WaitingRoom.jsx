@@ -12,17 +12,19 @@ const CLIENT_URL = "http://localhost:3000";
 const QR_CODE_SIZE = 200;
 
 const EVENT_TYPES = {
-  USER_JOINED: 'user_joined',
-  USER_LEFT: 'user_left',
-  GAME_START: 'game_start',
-  ROOM_STATE: 'room_state'
+  USER_JOINED: "user_joined",
+  USER_LEFT: "user_left",
+  GAME_START: "game_start",
+  ROOM_STATE: "room_state",
 };
 
 const WaitingRoom = () => {
   const { code } = useParams();
   const navigate = useNavigate();
   const [fiesteros, setFiesteros] = useState([]);
-  const [gameChoice, setGameChoice] = useState(() => localStorage.getItem("gameChoice"));
+  const [gameChoice, setGameChoice] = useState(() =>
+    localStorage.getItem("gameChoice"),
+  );
   const [error, setError] = useState("");
   const [socket, setSocket] = useState(null);
 
@@ -31,19 +33,19 @@ const WaitingRoom = () => {
       const token = localStorage.getItem("token");
       const response = await fetch(`${API_BASE_URL}/room/${code}`, {
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
-      
+
       if (!response.ok) {
         if (response.status === 404) {
           setError("Room not found");
           navigate("/home");
           return;
         }
-        throw new Error('Failed to fetch room data');
+        throw new Error("Failed to fetch room data");
       }
-      
+
       const data = await response.json();
       setFiesteros(data.fiesteros);
     } catch (error) {
@@ -54,10 +56,12 @@ const WaitingRoom = () => {
 
   const startGame = () => {
     if (socket?.readyState === WebSocket.OPEN) {
-      socket.send(JSON.stringify({
-        type: "start_game",
-        roomCode: code
-      }));
+      socket.send(
+        JSON.stringify({
+          type: "start_game",
+          roomCode: code,
+        }),
+      );
     } else {
       setError("Connection lost. Please refresh the page.");
     }
@@ -71,19 +75,22 @@ const WaitingRoom = () => {
         break;
 
       case EVENT_TYPES.USER_JOINED:
-        setFiesteros(prev => {
-          if (!prev.some(f => f.username === data.username)) {
-            return [...prev, { 
-              username: data.username, 
-              avatar: data.avatar 
-            }];
+        setFiesteros((prev) => {
+          if (!prev.some((f) => f.username === data.username)) {
+            return [
+              ...prev,
+              {
+                username: data.username,
+                avatar: data.avatar,
+              },
+            ];
           }
           return prev;
         });
         break;
 
       case EVENT_TYPES.USER_LEFT:
-        setFiesteros(prev => prev.filter(f => f.userId !== data.userId));
+        setFiesteros((prev) => prev.filter((f) => f.userId !== data.userId));
         break;
 
       case EVENT_TYPES.GAME_START:
@@ -105,14 +112,14 @@ const WaitingRoom = () => {
       navigate("/login");
       return;
     }
-  
+
     // Fetch initial room data
     fetchInitialRoomData();
 
     const storedChoice = localStorage.getItem("gameChoice");
     console.log("Stored game choice:", storedChoice);
     setGameChoice(storedChoice);
-  
+
     // Setup WebSocket connection
     console.log("Connecting to WebSocket...");
     const ws = new WebSocket(`${WS_BASE_URL}?token=${token}`);
@@ -120,10 +127,12 @@ const WaitingRoom = () => {
 
     ws.onopen = () => {
       console.log("WebSocket connected, joining room:", code);
-      ws.send(JSON.stringify({
-        type: "join_room",
-        roomCode: code
-      }));
+      ws.send(
+        JSON.stringify({
+          type: "join_room",
+          roomCode: code,
+        }),
+      );
     };
 
     ws.onmessage = (event) => {
@@ -147,9 +156,11 @@ const WaitingRoom = () => {
 
     return () => {
       if (ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify({
-          type: "leave_room"
-        }));
+        ws.send(
+          JSON.stringify({
+            type: "leave_room",
+          }),
+        );
         ws.close();
       }
     };

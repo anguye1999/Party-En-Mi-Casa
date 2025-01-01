@@ -1,5 +1,5 @@
 export const GAMES = {
-    UNO: "Game Uno",
-    DOS: "Game Dos",
-    TRES: "Game Tres"
-  };
+  UNO: "Game Uno",
+  DOS: "Game Dos",
+  TRES: "Game Tres",
+};

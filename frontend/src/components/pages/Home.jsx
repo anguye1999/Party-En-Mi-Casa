@@ -11,7 +11,7 @@ const API_BASE_URL = "http://localhost:3002/api";
 const GAME_BUTTONS = [
   { label: GAMES.UNO, className: "button-yellow" },
   { label: GAMES.DOS, className: "button-pink" },
-  { label: GAMES.TRES, className: "button-blue" }
+  { label: GAMES.TRES, className: "button-blue" },
 ];
 
 const Home = () => {
@@ -23,8 +23,8 @@ const Home = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`
-      }
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     if (!response.ok) {
@@ -36,20 +36,20 @@ const Home = () => {
 
   const handleClick = async (gameChoice) => {
     const token = localStorage.getItem("token");
-  
+
     if (!token) {
       console.error("No token found, redirecting to login");
       navigate("/login");
       return;
     }
-  
+
     if (gameChoice === GAMES.DOS || gameChoice === GAMES.TRES) {
       navigate("/coming-soon");
       return;
     }
-  
+
     setLoading(true);
-  
+
     try {
       const { roomCode } = await createRoom(token);
       console.log("Button clicked:", gameChoice);

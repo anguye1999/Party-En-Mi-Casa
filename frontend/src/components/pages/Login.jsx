@@ -7,7 +7,7 @@ const API_BASE_URL = "http://localhost:3002/api";
 const ENDPOINTS = {
   login: `${API_BASE_URL}/login`,
   signup: `${API_BASE_URL}/signup`,
-  user: `${API_BASE_URL}/user`
+  user: `${API_BASE_URL}/user`,
 };
 
 const loginUser = async (username, password) => {
@@ -73,7 +73,9 @@ const Login = () => {
         </div>
         {errorMessage && <p className="error-message">{errorMessage}</p>}
         <button type="submit">Login</button>
-        <button type="button" onClick={() => navigate("/signup")}>Create an Account</button>
+        <button type="button" onClick={() => navigate("/signup")}>
+          Create an Account
+        </button>
       </form>
     </div>
   );

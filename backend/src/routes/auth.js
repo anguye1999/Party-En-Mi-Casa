@@ -21,7 +21,7 @@ router.get("/user", authMiddleware, async (req, res) => {
   try {
     // Find the user by ID from the JWT token
     const user = await User.findById(req.userId);
-    
+
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -30,7 +30,7 @@ router.get("/user", authMiddleware, async (req, res) => {
     res.json({
       username: user.username,
       email: user.email,
-      avatar: user.avatar
+      avatar: user.avatar,
     });
   } catch (error) {
     console.error("Error fetching user: ", error);
@@ -65,8 +65,8 @@ router.post("/login", async (req, res) => {
       user: {
         username: existingUser.username,
         email: existingUser.email,
-        avatar: existingUser.avatar
-      }
+        avatar: existingUser.avatar,
+      },
     });
   } catch (error) {
     console.error("Error during login: ", error);
@@ -83,13 +83,9 @@ router.post("/signup", async (req, res) => {
     const existingUserByEmail = await User.findOne({ email });
     const existingUserByUsername = await User.findOne({ username });
     if (existingUserByEmail) {
-      return res
-        .status(400)
-        .json({ message: "Email already in use." });
+      return res.status(400).json({ message: "Email already in use." });
     } else if (existingUserByUsername) {
-      return res
-        .status(400)
-        .json({ message: "Username already in use." })
+      return res.status(400).json({ message: "Username already in use." });
     }
 
     // Validate avatar if provided
@@ -116,7 +112,7 @@ router.post("/signup", async (req, res) => {
       username,
       email,
       password: hashedPassword,
-      avatar: validatedAvatar
+      avatar: validatedAvatar,
     });
 
     await newUser.save();
@@ -126,8 +122,8 @@ router.post("/signup", async (req, res) => {
       user: {
         username: newUser.username,
         email: newUser.email,
-        avatar: newUser.avatar ? true : false
-      }
+        avatar: newUser.avatar ? true : false,
+      },
     });
   } catch (error) {
     console.error("Error saving user: ", error);

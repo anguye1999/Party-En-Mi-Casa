@@ -4,7 +4,7 @@ import "../styles/Header.css";
 
 const API_BASE_URL = "http://localhost:3002/api";
 const ENDPOINTS = {
-  user: `${API_BASE_URL}/user`
+  user: `${API_BASE_URL}/user`,
 };
 
 const fetchUserData = async (token) => {
@@ -15,7 +15,7 @@ const fetchUserData = async (token) => {
     },
   });
   if (!response.ok) {
-    throw new Error('Failed to fetch user data');
+    throw new Error("Failed to fetch user data");
   }
   return await response.json();
 };
@@ -64,18 +64,22 @@ const Header = ({ title }) => {
 
   return (
     <header className="header">
-      <div className="header-left" onClick={handleLogoClick} style={{ cursor: 'pointer' }}>
-        <img 
-          src="/char_icon.png" 
-          alt="Logo" 
-          className="header-icon"
-        />
+      <div
+        className="header-left"
+        onClick={handleLogoClick}
+        style={{ cursor: "pointer" }}
+      >
+        <img src="/char_icon.png" alt="Logo" className="header-icon" />
         <h1 className="header-title">{title}</h1>
       </div>
       <div className="user-greeting">
         {user && <span className="user-name">Hello, {user}</span>}
-        <button className="join-room-button" onClick={handleJoin}>Join</button>
-        <button className="logout-button" onClick={handleLogout}>Logout</button>
+        <button className="join-room-button" onClick={handleJoin}>
+          Join
+        </button>
+        <button className="logout-button" onClick={handleLogout}>
+          Logout
+        </button>
       </div>
     </header>
   );

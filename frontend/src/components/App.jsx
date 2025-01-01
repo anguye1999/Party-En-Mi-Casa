@@ -23,7 +23,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/room/:code" element={<WaitingRoom />} />
           <Route path="/room/:code/gameuno" element={<GameUno />} />
-          <Route path="/room/:code/results" element={<ResultsRoom />}/>
+          <Route path="/room/:code/results" element={<ResultsRoom />} />
           <Route path="/join" element={<Join />} />
           <Route path="/coming-soon" element={<ComingSoon />} />
         </Routes>

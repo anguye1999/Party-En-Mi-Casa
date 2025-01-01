@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Header from "../Header";
 import Footer from "../Footer";
-import { GAME_CONSTANTS } from "../../constants/gameConstants.js"
+import { GAME_CONSTANTS } from "../../constants/gameConstants.js";
 import "../../styles/ResultsRoom.css";
 
 const API_BASE_URL = "http://localhost:3002/api";
@@ -30,7 +30,7 @@ const ResultsRoom = () => {
         const data = await response.json();
         if (data.gameState && data.gameState.players) {
           const sortedScores = [...data.gameState.players].sort(
-            (a, b) => b.score - a.score
+            (a, b) => b.score - a.score,
           );
           setScores(sortedScores);
         }
@@ -45,23 +45,23 @@ const ResultsRoom = () => {
 
   const handleBack = () => navigate(`/room/${code}`);
   const handleChooseGame = () => navigate("/home");
-  
+
   const handleNewGame = async () => {
     try {
       setIsStartingGame(true);
       const token = localStorage.getItem("token");
-      
+
       // Start new game via API
       const response = await fetch(`${API_BASE_URL}/room/${code}/start`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
       });
 
       if (!response.ok) {
-        throw new Error('Failed to start new game');
+        throw new Error("Failed to start new game");
       }
 
       // Navigate back to game
@@ -78,7 +78,9 @@ const ResultsRoom = () => {
     <div className="performance-stats">
       <div className="stat-item">
         <span className="stat-label">Correct Answers:</span>
-        <span className="stat-value">{player.correctAnswers || 0}/{GAME_CONSTANTS.MAX_QUESTIONS}</span>
+        <span className="stat-value">
+          {player.correctAnswers || 0}/{GAME_CONSTANTS.MAX_QUESTIONS}
+        </span>
       </div>
       <div className="stat-item">
         <span className="stat-label">Best Streak:</span>
@@ -89,9 +91,11 @@ const ResultsRoom = () => {
         <span className="stat-value">{player.avgResponseTime || 0}s</span>
       </div>
       <div className="progress-bar">
-        <div 
-          className="progress" 
-          style={{ width: `${((player.correctAnswers || 0) / GAME_CONSTANTS.MAX_QUESTIONS) * 100}%` }}
+        <div
+          className="progress"
+          style={{
+            width: `${((player.correctAnswers || 0) / GAME_CONSTANTS.MAX_QUESTIONS) * 100}%`,
+          }}
         />
       </div>
     </div>
@@ -108,7 +112,11 @@ const ResultsRoom = () => {
               <div className="second-place animate-place">
                 <div className="avatar-container">
                   {scores[1]?.avatar && (
-                    <img src={scores[1].avatar} alt="2nd place" className="player-avatar" />
+                    <img
+                      src={scores[1].avatar}
+                      alt="2nd place"
+                      className="player-avatar"
+                    />
                   )}
                 </div>
                 <div className="player-info">
@@ -120,7 +128,11 @@ const ResultsRoom = () => {
               <div className="first-place animate-place">
                 <div className="avatar-container">
                   {scores[0]?.avatar && (
-                    <img src={scores[0].avatar} alt="1st place" className="player-avatar crown" />
+                    <img
+                      src={scores[0].avatar}
+                      alt="1st place"
+                      className="player-avatar crown"
+                    />
                   )}
                 </div>
                 <div className="player-info">
@@ -132,7 +144,11 @@ const ResultsRoom = () => {
               <div className="third-place animate-place">
                 <div className="avatar-container">
                   {scores[2]?.avatar && (
-                    <img src={scores[2].avatar} alt="3rd place" className="player-avatar" />
+                    <img
+                      src={scores[2].avatar}
+                      alt="3rd place"
+                      className="player-avatar"
+                    />
                   )}
                 </div>
                 <div className="player-info">
@@ -144,7 +160,7 @@ const ResultsRoom = () => {
         </div>
 
         <div className="stats-toggle">
-          <button 
+          <button
             className="toggle-button"
             onClick={() => setShowStats(!showStats)}
           >
@@ -171,7 +187,10 @@ const ResultsRoom = () => {
             <h2>Leaderboard</h2>
             <ul className="leaderboard">
               {scores.map((player, index) => (
-                <li key={player.userId} className={`leaderboard-item animate-slide-in`}>
+                <li
+                  key={player.userId}
+                  className={`leaderboard-item animate-slide-in`}
+                >
                   <span className="rank">#{index + 1}</span>
                   <span className="name">{player.username}</span>
                   <span className="score">{player.score} pts</span>
@@ -183,19 +202,22 @@ const ResultsRoom = () => {
       </div>
 
       <Footer>
-        <button className="footer-button back-button"
+        <button
+          className="footer-button back-button"
           onClick={handleBack}
           disabled={isStartingGame}
         >
           Back
         </button>
-        <button className="footer-button choose-game-button"
+        <button
+          className="footer-button choose-game-button"
           onClick={handleChooseGame}
           disabled={isStartingGame}
         >
           Choose Game
         </button>
-        <button className="footer-button new-game-button"
+        <button
+          className="footer-button new-game-button"
           onClick={handleNewGame}
           disabled={isStartingGame}
         >

@@ -29,7 +29,7 @@ const Signup = () => {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/;
     if (!passwordRegex.test(password)) {
       setError(
-        "Password must be at least 6 characters and include 1 lowercase, 1 uppercase, and 1 number."
+        "Password must be at least 6 characters and include 1 lowercase, 1 uppercase, and 1 number.",
       );
       return;
     }
@@ -50,29 +50,30 @@ const Signup = () => {
         username: lowercasedUsername,
         email: lowercasedEmail,
         password,
-        avatar: avatar
+        avatar: avatar,
       };
 
       const response = await axios.post(
-        "http://localhost:3002/api/signup", 
+        "http://localhost:3002/api/signup",
         signupData,
         {
           headers: {
-            'Content-Type': 'application/json'
-          }
-        }
+            "Content-Type": "application/json",
+          },
+        },
       );
 
       // Handle successful signup
       console.log("Signup successful", response.data);
       navigate("/login");
-
     } catch (error) {
       // Handle signup errors
       console.error("Error during signup:", error);
-      
+
       if (error.response) {
-        setError(error.response.data.message || "Signup failed. Please try again.");
+        setError(
+          error.response.data.message || "Signup failed. Please try again.",
+        );
       } else if (error.request) {
         setError("No response from server. Please check your connection.");
       } else {

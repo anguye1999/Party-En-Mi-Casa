@@ -11,11 +11,13 @@ const app = express();
 const wsApp = express();
 
 // Enable CORS
-app.use(cors({
-  origin: process.env.CLIENT_URL || "http://localhost:3000",
-  methods: ["GET", "POST"],
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    methods: ["GET", "POST"],
+    credentials: true,
+  }),
+);
 
 app.use(bodyParser.json());
 app.use("/api", authRoutes);

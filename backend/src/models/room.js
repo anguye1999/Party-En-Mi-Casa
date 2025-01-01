@@ -4,25 +4,27 @@ const roomSchema = new mongoose.Schema({
   code: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   gameChoice: {
     type: String,
-    required: true
+    required: true,
   },
-  fiesteros: [{
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
+  fiesteros: [
+    {
+      userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+      username: String,
+      avatar: String,
     },
-    username: String,
-    avatar: String
-  }],
+  ],
   createdAt: {
     type: Date,
     default: Date.now,
-    expires: 86400 // Auto deleted after 24 hours
-  }
+    expires: 86400, // Auto deleted after 24 hours
+  },
 });
 
 const Room = mongoose.model("Room", roomSchema);
