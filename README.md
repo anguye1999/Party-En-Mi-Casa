@@ -21,12 +21,4 @@ podman compose up -d
 | REST API | 3002 |
 | MongoDB | 27017 |
 | Mongo-Express | 8081 |
-=======
-| Service        | Port  |
-| -------------- | ----- |
-| React Frontend | 3000  |
-| WebSockets     | 3001  |
-| REST API       | 3002  |
-| MongoDB        | 27017 |
-| Mongo-Express  | 8081  |
->>>>>>> pemc-helpme
+
