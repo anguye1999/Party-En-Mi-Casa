@@ -3,14 +3,24 @@ import { useNavigate } from "react-router-dom";
 import Button from "../Button.jsx";
 import Footer from "../Footer.jsx";
 import Header from "../Header.jsx";
+<<<<<<< HEAD
+=======
+import { GAMES } from "../../constants";
+>>>>>>> pemc-helpme
 import "../../styles/Home.css";
 
 const API_BASE_URL = "http://localhost:3002/api";
 
 const GAME_BUTTONS = [
+<<<<<<< HEAD
   { label: "Game Uno", className: "button-yellow" },
   { label: "Game Dos", className: "button-pink" },
   { label: "Game Tres", className: "button-blue" }
+=======
+  { label: GAMES.UNO, className: "button-yellow" },
+  { label: GAMES.DOS, className: "button-pink" },
+  { label: GAMES.TRES, className: "button-blue" },
+>>>>>>> pemc-helpme
 ];
 
 const Home = () => {
@@ -22,8 +32,13 @@ const Home = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+<<<<<<< HEAD
         Authorization: `Bearer ${token}`
       }
+=======
+        Authorization: `Bearer ${token}`,
+      },
+>>>>>>> pemc-helpme
     });
 
     if (!response.ok) {
@@ -42,14 +57,27 @@ const Home = () => {
       return;
     }
 
+<<<<<<< HEAD
+=======
+    if (gameChoice === GAMES.DOS || gameChoice === GAMES.TRES) {
+      navigate("/coming-soon");
+      return;
+    }
+
+>>>>>>> pemc-helpme
     setLoading(true);
 
     try {
       const { roomCode } = await createRoom(token);
       console.log("Button clicked:", gameChoice);
+<<<<<<< HEAD
       console.log("Generated room code:", roomCode);
       
       localStorage.setItem("gameChoice", gameChoice);
+=======
+      localStorage.setItem("gameChoice", gameChoice);
+      console.log("Stored game choice:", localStorage.getItem("gameChoice"));
+>>>>>>> pemc-helpme
       navigate(`/room/${roomCode}`);
     } catch (error) {
       console.error("Error creating room:", error);
@@ -88,4 +116,8 @@ const Home = () => {
   );
 };
 
+<<<<<<< HEAD
 export default Home;
+=======
+export default Home;
+>>>>>>> pemc-helpme

@@ -9,6 +9,10 @@
   top: 0;
   left: 0;
   z-index: 1000;
+<<<<<<< HEAD
+=======
+  overflow: hidden;
+>>>>>>> pemc-helpme
 }
 
 .header-title {
@@ -16,8 +20,12 @@
   font-size: 2rem;
   color: #000;
   margin: 0;
+<<<<<<< HEAD
   border: 0;
   box-shadow: none;
+=======
+  /* border: 0; */
+>>>>>>> pemc-helpme
 }
 
 .user-greeting {
@@ -31,8 +39,13 @@
   color: #000;
   cursor: pointer;
   padding: 2vh;
+<<<<<<< HEAD
   margin: 10px;
   width: 7.5vw;
+=======
+  margin: 1vh 1vw;
+  width: auto;
+>>>>>>> pemc-helpme
   font-size: 0.75rem;
 }
 
@@ -87,4 +100,38 @@
   width: 40px;
   height: 40px;
   object-fit: cover;
+<<<<<<< HEAD
 }
+=======
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 0 0.5rem;
+  }
+
+  .header-title {
+    display: none;
+  }
+
+  .header-icon {
+    width: 30px;
+    height: 30px;
+  }
+
+  .user-name {
+    font-size: 0.75rem;
+  }
+
+  .logout-button,
+  .join-room-button {
+    font-size: 1rem;
+    padding: 1vh;
+    margin: 0.5vh, 0.5vw;
+  }
+
+  .user-greeting {
+    margin-left: 1rem;
+  }
+}
+>>>>>>> pemc-helpme

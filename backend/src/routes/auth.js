@@ -21,7 +21,11 @@ router.get("/user", authMiddleware, async (req, res) => {
   try {
     // Find the user by ID from the JWT token
     const user = await User.findById(req.userId);
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> pemc-helpme
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -30,7 +34,11 @@ router.get("/user", authMiddleware, async (req, res) => {
     res.json({
       username: user.username,
       email: user.email,
+<<<<<<< HEAD
       avatar: user.avatar
+=======
+      avatar: user.avatar,
+>>>>>>> pemc-helpme
     });
   } catch (error) {
     console.error("Error fetching user: ", error);
@@ -65,8 +73,13 @@ router.post("/login", async (req, res) => {
       user: {
         username: existingUser.username,
         email: existingUser.email,
+<<<<<<< HEAD
         avatar: existingUser.avatar
       }
+=======
+        avatar: existingUser.avatar,
+      },
+>>>>>>> pemc-helpme
     });
   } catch (error) {
     console.error("Error during login: ", error);
@@ -83,6 +96,7 @@ router.post("/signup", async (req, res) => {
     const existingUserByEmail = await User.findOne({ email });
     const existingUserByUsername = await User.findOne({ username });
     if (existingUserByEmail) {
+<<<<<<< HEAD
       return res
         .status(400)
         .json({ message: "Email already in use." });
@@ -90,6 +104,11 @@ router.post("/signup", async (req, res) => {
       return res
         .status(400)
         .json({ message: "Username already in use." })
+=======
+      return res.status(400).json({ message: "Email already in use." });
+    } else if (existingUserByUsername) {
+      return res.status(400).json({ message: "Username already in use." });
+>>>>>>> pemc-helpme
     }
 
     // Validate avatar if provided
@@ -116,7 +135,11 @@ router.post("/signup", async (req, res) => {
       username,
       email,
       password: hashedPassword,
+<<<<<<< HEAD
       avatar: validatedAvatar
+=======
+      avatar: validatedAvatar,
+>>>>>>> pemc-helpme
     });
 
     await newUser.save();
@@ -126,8 +149,13 @@ router.post("/signup", async (req, res) => {
       user: {
         username: newUser.username,
         email: newUser.email,
+<<<<<<< HEAD
         avatar: newUser.avatar ? true : false
       }
+=======
+        avatar: newUser.avatar ? true : false,
+      },
+>>>>>>> pemc-helpme
     });
   } catch (error) {
     console.error("Error saving user: ", error);
@@ -137,4 +165,8 @@ router.post("/signup", async (req, res) => {
   }
 });
 
+<<<<<<< HEAD
 export default router;
+=======
+export default router;
+>>>>>>> pemc-helpme

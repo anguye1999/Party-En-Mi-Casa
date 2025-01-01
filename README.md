@@ -1,6 +1,10 @@
 # Party En Mi Casa!
 
+<<<<<<< HEAD
 A fun party game for you and your amigos!  Create a room and have your friends join in on their phone.
+=======
+A fun party game for you and your amigos! Create a room and have your friends join in on their phone.
+>>>>>>> pemc-helpme
 
 ## Directions for Running with Podman
 
@@ -14,6 +18,7 @@ podman compose up -d
 
 ## Development Ports
 
+<<<<<<< HEAD
 | Service | Port |
 |---------|------|
 | React Frontend | 3000 |
@@ -21,3 +26,12 @@ podman compose up -d
 | REST API | 3002 |
 | MongoDB | 27017 |
 | Mongo-Express | 8081 |
+=======
+| Service        | Port  |
+| -------------- | ----- |
+| React Frontend | 3000  |
+| WebSockets     | 3001  |
+| REST API       | 3002  |
+| MongoDB        | 27017 |
+| Mongo-Express  | 8081  |
+>>>>>>> pemc-helpme

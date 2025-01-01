@@ -16,9 +16,17 @@ services:
   backend:
     build: ./backend
     ports:
+<<<<<<< HEAD
       - 3002:3002
     depends_on:
       - mongo
+=======
+      - 3002:3002 # REST API
+      - 3001:3001 # Websocket
+    depends_on:
+      - mongo
+      - redis
+>>>>>>> pemc-helpme
     env_file:
       - .env
   redis:
@@ -26,4 +34,8 @@ services:
 
 volumes:
   mongoDB:
+<<<<<<< HEAD
     external: true
+=======
+    external: true
+>>>>>>> pemc-helpme

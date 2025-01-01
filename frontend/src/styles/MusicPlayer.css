@@ -1,0 +1,31 @@
+.music-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+  background-color: var(--white);
+  border: 2px solid #000;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 3px 3px #000;
+  transition: all 0.2s ease;
+}
+
+.music-toggle:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px #000;
+}
+
+.music-toggle:active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px #000;
+}
+
+.music-toggle svg {
+  color: #000;
+}

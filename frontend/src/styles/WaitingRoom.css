@@ -5,8 +5,13 @@
   --avatar-size: 100px;
   --room-code-size: 8vw;
   --heading-size: 2vw;
+<<<<<<< HEAD
   --username-size: 2rem;
   
+=======
+  --username-size: 1.5rem;
+
+>>>>>>> pemc-helpme
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -29,11 +34,19 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+<<<<<<< HEAD
   
   background-color: var(--white);
   border: var(--box-border-width) solid #000;
   box-shadow: var(--box-border-width) var(--box-border-width) #000;
   
+=======
+
+  background-color: var(--white);
+  border: var(--box-border-width) solid #000;
+  box-shadow: var(--box-border-width) var(--box-border-width) #000;
+
+>>>>>>> pemc-helpme
   text-transform: uppercase;
   font-weight: bold;
 }
@@ -56,7 +69,11 @@
 
 .fiesteros-list {
   list-style: none;
+<<<<<<< HEAD
   padding: 2rem;
+=======
+  padding: 1rem;
+>>>>>>> pemc-helpme
   margin: 0;
 }
 
@@ -64,16 +81,26 @@
   display: flex;
   align-items: center;
   padding: 10px;
+<<<<<<< HEAD
   margin-bottom: 2rem;
+=======
+  margin-bottom: 2.5rem;
+>>>>>>> pemc-helpme
   font-size: var(--username-size);
 }
 
 .fiestero-avatar {
+<<<<<<< HEAD
   width: var(--avatar-size);
   height: var(--avatar-size);
   margin-right: 15px;
   border: 3px solid var(--white);
   border-radius: 5px;
+=======
+  min-width: var(--avatar-size);
+  min-height: var(--avatar-size);
+  border: 3px solid var(--white);
+>>>>>>> pemc-helpme
   overflow: hidden;
 }
 
@@ -86,6 +113,10 @@
 h2 {
   font-size: var(--heading-size);
   align-self: center;
+<<<<<<< HEAD
+=======
+  font-size: var(--heading-size);
+>>>>>>> pemc-helpme
 }
 
 .fiestero-username {
@@ -101,4 +132,79 @@ h2 {
   color: var(--error);
   text-align: center;
   padding: 1rem;
+<<<<<<< HEAD
 }
+=======
+}
+
+/* Media Queries for Mobile Responsiveness */
+@media screen and (max-width: 1024px) {
+  .waiting-room-container {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+  }
+
+  .waiting-room .header,
+  .waiting-room .footer {
+    display: none;
+  }
+
+  .eight-bit-box {
+    width: 100%;
+    margin: 0.5rem 0;
+    height: auto;
+    padding: 1rem;
+  }
+
+  .waiting-room h2 {
+    font-size: 3.5vw;
+  }
+
+  .room-code {
+    font-size: 10vw;
+    font-weight: bold;
+  }
+
+  .fiesteros-box {
+    width: 100%;
+    padding: 1rem;
+    margin-top: 1rem;
+  }
+
+  .fiesteros-list {
+    font-size: 4vw;
+    width: 100%;
+  }
+
+  .fiestero-item {
+    font-size: 3vw;
+    padding: 0.5rem;
+    margin-bottom: 2rem;
+    width: 90%;
+  }
+
+  .fiestero-avatar {
+    width: 8vw;
+    height: 8vw;
+    margin-right: 10px;
+  }
+
+  .fiestero-username {
+    font-size: 1rem;
+    color: var(--dark);
+  }
+
+  .user-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .QR-code {
+    width: 50vw;
+    height: 50vw;
+  }
+}
+>>>>>>> pemc-helpme

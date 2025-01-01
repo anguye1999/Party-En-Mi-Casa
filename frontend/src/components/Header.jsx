@@ -4,7 +4,11 @@ import "../styles/Header.css";
 
 const API_BASE_URL = "http://localhost:3002/api";
 const ENDPOINTS = {
+<<<<<<< HEAD
   user: `${API_BASE_URL}/user`
+=======
+  user: `${API_BASE_URL}/user`,
+>>>>>>> pemc-helpme
 };
 
 const fetchUserData = async (token) => {
@@ -15,7 +19,11 @@ const fetchUserData = async (token) => {
     },
   });
   if (!response.ok) {
+<<<<<<< HEAD
     throw new Error('Failed to fetch user data');
+=======
+    throw new Error("Failed to fetch user data");
+>>>>>>> pemc-helpme
   }
   return await response.json();
 };
@@ -64,12 +72,21 @@ const Header = ({ title }) => {
 
   return (
     <header className="header">
+<<<<<<< HEAD
       <div className="header-left" onClick={handleLogoClick} style={{ cursor: 'pointer' }}>
         <img 
           src="/src/assets/char_icon.png" 
           alt="Logo" 
           className="header-icon"
         />
+=======
+      <div
+        className="header-left"
+        onClick={handleLogoClick}
+        style={{ cursor: "pointer" }}
+      >
+        <img src="/char_icon.png" alt="Logo" className="header-icon" />
+>>>>>>> pemc-helpme
         <h1 className="header-title">{title}</h1>
       </div>
       <div className="user-greeting">
@@ -85,4 +102,8 @@ const Header = ({ title }) => {
   );
 };
 
+<<<<<<< HEAD
 export default Header;
+=======
+export default Header;
+>>>>>>> pemc-helpme

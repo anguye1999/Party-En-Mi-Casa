@@ -7,7 +7,11 @@ const API_BASE_URL = "http://localhost:3002/api";
 const ENDPOINTS = {
   login: `${API_BASE_URL}/login`,
   signup: `${API_BASE_URL}/signup`,
+<<<<<<< HEAD
   user: `${API_BASE_URL}/user`
+=======
+  user: `${API_BASE_URL}/user`,
+>>>>>>> pemc-helpme
 };
 
 const loginUser = async (username, password) => {
@@ -73,10 +77,20 @@ const Login = () => {
         </div>
         {errorMessage && <p className="error-message">{errorMessage}</p>}
         <button type="submit">Login</button>
+<<<<<<< HEAD
         <button type="button" onClick={() => navigate("/signup")}>Create an Account</button>
+=======
+        <button type="button" onClick={() => navigate("/signup")}>
+          Create an Account
+        </button>
+>>>>>>> pemc-helpme
       </form>
     </div>
   );
 };
 
+<<<<<<< HEAD
 export default Login;
+=======
+export default Login;
+>>>>>>> pemc-helpme

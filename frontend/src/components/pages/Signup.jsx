@@ -29,7 +29,11 @@ const Signup = () => {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/;
     if (!passwordRegex.test(password)) {
       setError(
+<<<<<<< HEAD
         "Password must be at least 6 characters and include 1 lowercase, 1 uppercase, and 1 number."
+=======
+        "Password must be at least 6 characters and include 1 lowercase, 1 uppercase, and 1 number.",
+>>>>>>> pemc-helpme
       );
       return;
     }
@@ -50,6 +54,7 @@ const Signup = () => {
         username: lowercasedUsername,
         email: lowercasedEmail,
         password,
+<<<<<<< HEAD
         avatar: avatar // Include the converted avatar
       };
 
@@ -62,11 +67,25 @@ const Signup = () => {
             'Content-Type': 'application/json'
           }
         }
+=======
+        avatar: avatar,
+      };
+
+      const response = await axios.post(
+        "http://localhost:3002/api/signup",
+        signupData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        },
+>>>>>>> pemc-helpme
       );
 
       // Handle successful signup
       console.log("Signup successful", response.data);
       navigate("/login");
+<<<<<<< HEAD
 
     } catch (error) {
       // Handle signup errors
@@ -81,6 +100,19 @@ const Signup = () => {
         setError("No response from server. Please check your connection.");
       } else {
         // Something else went wrong
+=======
+    } catch (error) {
+      // Handle signup errors
+      console.error("Error during signup:", error);
+
+      if (error.response) {
+        setError(
+          error.response.data.message || "Signup failed. Please try again.",
+        );
+      } else if (error.request) {
+        setError("No response from server. Please check your connection.");
+      } else {
+>>>>>>> pemc-helpme
         setError("Signup failed. Please try again.");
       }
     }
@@ -131,4 +163,8 @@ const Signup = () => {
   );
 };
 
+<<<<<<< HEAD
 export default Signup;
+=======
+export default Signup;
+>>>>>>> pemc-helpme

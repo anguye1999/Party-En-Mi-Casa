@@ -1,0 +1,72 @@
+@import url("App.css");
+
+.coming-soon-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  background-color: var(--pink);
+  background-image: url("/src/assets/char_icon.png");
+  background-repeat: repeat;
+  background-size: auto;
+}
+
+.coming-soon-body {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.coming-soon-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  background-color: var(--white);
+  border: 0.5vw solid #000;
+  border-radius: 0;
+  box-shadow: 0.5vw 0.5vw #000;
+  padding: 3rem;
+  max-width: 500px;
+  width: 90%;
+}
+
+.coming-soon-content h1 {
+  color: #000;
+  text-align: center;
+  font-size: 2rem;
+  margin: 0;
+}
+
+.construction-icon {
+  color: var(--yellow);
+  background-color: var(--light-blue);
+  padding: 1rem;
+  border-radius: 50%;
+  border: 3px solid #000;
+}
+
+.back-button-home {
+  background-color: var(--green);
+  color: #000;
+  border: 2px solid #000;
+  border-radius: 0;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 3px 3px #000;
+}
+
+.back-button-home:hover {
+  background-color: var(--teal);
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px #000;
+}
+
+.back-button-home:active {
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px #000;
+}
